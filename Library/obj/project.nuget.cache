@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "L/6bggxNZzkeqsUIn/fYKvJ8g1KxAYncxDmNaLujv7mpX265eLPlph28NplEJBqnSFKeUKJNH8mFSI0M0cvZUA==",
+  "success": true,
+  "projectFilePath": "/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/Library.csproj",
+  "expectedPackageFiles": [
+    "/Users/oliver/.nuget/packages/microsoft.netcore.app/2.1.0/microsoft.netcore.app.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/microsoft.netcore.dotnetapphost/2.1.0/microsoft.netcore.dotnetapphost.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/microsoft.netcore.dotnethostpolicy/2.1.0/microsoft.netcore.dotnethostpolicy.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/microsoft.netcore.dotnethostresolver/2.1.0/microsoft.netcore.dotnethostresolver.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/microsoft.netcore.platforms/2.1.0/microsoft.netcore.platforms.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/microsoft.netcore.targets/2.1.0/microsoft.netcore.targets.2.1.0.nupkg.sha512",
+    "/Users/oliver/.nuget/packages/netstandard.library/2.0.3/netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -8,7 +8,7 @@ namespace Library
     {
         public class Node
         {
-            List<Edge> connections;
+            public List<Edge> connections;
             public bool visited;
 
 
@@ -52,18 +52,18 @@ namespace Library
                 return true;
             }
 
-            public void dispBFT()
+            public List<Node> getConnections()
             {
-               foreach(Edge e in connections)
+                List<Node> nodes = new List<Node>();
+
+                foreach(Edge edge in connections)
                 {
-                    
+                    nodes.Add(edge.getDestNode());
                 }
+
+                return nodes;
             }
 
-            void dispBFT(Node n)
-            {
-                
-            }
 
         }
 
@@ -117,19 +117,70 @@ namespace Library
 
         public bool connectNodesBiDirection(Node start, Node end, double cost)
         {
-            return connectNodesUniDirection(start, end, cost) && connectNodesUniDirection(end, start, cost);
+            return connectNodesUniDirection(start, end, cost) &&
+                connectNodesUniDirection(end, start, cost);
         }
 
-        public void displayGraphBFT()
+        public void dispGraphBFT()
         {
-            foreach(Node n in nodes)
+            Queue<Node> queue = new Queue<Node>();
+
+            queue.Enqueue(nodes[0]);
+
+            while(queue.Count > 0)
             {
-                if (!n.visited)
-                {
-                    n.dispBFT();
+                Node node = queue.Dequeue();
+
+                Console.WriteLine(node.getData());
+
+                if (node.connections.Count > 0)
+                {            
+                    foreach (Edge edge in node.connections)
+                    {
+                        queue.Enqueue(edge.getDestNode());
+                    }
                 }
+
+                node.visited = true;
             }
 
+            Console.WriteLine("\n\n Method 2 \n");
+
+            foreach(Node n in queue)
+            {
+                Node node = queue.Dequeue();
+
+                Console.WriteLine(node.getData());
+
+                if (node.connections.Count > 0)
+                {
+                    foreach (Edge edge in node.connections)
+                    {
+                        queue.Enqueue(edge.getDestNode());
+                    }
+                }
+
+                node.visited = true;
+            }
+        }
+
+
+        public void dispGraphDFT()
+        {
+            resetVisitedNodes();
+
+            dispGrapDFT(nodes[0]);
+        }
+
+        private void dispGrapDFT(Node node)
+        {
+            foreach(Edge edge in node.connections)
+            {
+                Node n = edge.getDestNode();
+                dispGrapDFT(n);
+                n.visited = true;
+                Console.WriteLine(n.getData());
+            }
         }
 
         public void resetVisitedNodes()
@@ -138,6 +189,38 @@ namespace Library
             {
                 node.visited = false;
             }
+        }
+
+        public int[,] getAdjacencyMatrix()
+        {
+            int[,] matrix = new int[nodes.Count, nodes.Count];
+
+            for (int row = 0; row < nodes.Count; row++)
+            {
+                List<Node> neighbors = nodes[row].getConnections();
+
+                for (int col = 0; col < nodes.Count; col++)
+                {
+                    if (neighbors.Contains(nodes[col]))
+                        matrix[row, col] = 1;
+                    else
+                        matrix[row, col] = 0;
+                }
+            }
+
+            return matrix;
+        }
+
+        public LinkedList<Node> getAdjacencyList()
+        {
+            LinkedList<Node> listNodes = new LinkedList<Node>();
+
+            foreach (Node node in nodes)
+            {
+                
+            }
+
+            return listNodes;
         }
     }
 }
