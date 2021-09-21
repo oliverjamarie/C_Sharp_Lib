@@ -1,19 +1,8 @@
 ﻿<Properties StartupConfiguration="{1D7EFADD-0750-41B9-8399-2DBC2089A6C3}|Default">
   <MonoDevelop.Ide.Workbench ActiveDocument="Graph.cs">
     <Files>
-      <File FileName="Graph.cs" Line="64" Column="30" />
+      <File FileName="Graph.cs" Line="195" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="Library" expanded="True">
-            <Node name="Library" expanded="True">
-              <Node name="Graph.cs" selected="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.Library PreferredExecutionTarget="MonoDevelop.Default" />

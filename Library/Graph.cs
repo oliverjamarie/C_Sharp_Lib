@@ -10,7 +10,7 @@ namespace Library
         {
             public List<Edge> connections;
             public bool visited;
-
+            private bool allowSelfConnection;
 
             T data;
             Node prevNode;
@@ -23,6 +23,14 @@ namespace Library
                 this.data = t;
                 visited = false;
                 costToPrevNode = 0;
+            }
+
+            public Node(T t, bool allowSelfConnection){
+                connections = new List<Edge>();
+                this.data = t;
+                visited = false;
+                costToPrevNode = 0;
+                this.allowSelfConnection = allowSelfConnection;
             }
 
             public T getData()
@@ -38,11 +46,12 @@ namespace Library
 
             public bool connectNode(Node destNode, double cost)
             {
-                if (this.Equals(destNode))
+                if (this.Equals(destNode) && !allowSelfConnection)
                     return false;
 
                 foreach(Edge e in connections)
                 {
+                    // checks if a connection to the target node already exists
                     if (e.getDestNode().data.Equals(destNode.data))
                         return false;
                 }
@@ -134,7 +143,7 @@ namespace Library
                 Console.WriteLine(node.getData());
 
                 if (node.connections.Count > 0)
-                {            
+                {
                     foreach (Edge edge in node.connections)
                     {
                         queue.Enqueue(edge.getDestNode());
@@ -210,17 +219,16 @@ namespace Library
 
             return matrix;
         }
+        
 
-        public LinkedList<Node> getAdjacencyList()
-        {
-            LinkedList<Node> listNodes = new LinkedList<Node>();
+        public Dictionary<Node, List<Node>> getAdjacencyList(){
+            Dictionary<Node, List<Node>> dict = new Dictionary<Node, List<Node>>();
 
-            foreach (Node node in nodes)
-            {
-                
+            foreach(Node node in nodes){
+                dict.Add(node, node.getConnections());
             }
 
-            return listNodes;
+            return dict;
         }
     }
 }
