@@ -1,0 +1,13 @@
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/bin/Debug/netcoreapp2.1/Library.deps.json
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/bin/Debug/netcoreapp2.1/Library.runtimeconfig.json
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/bin/Debug/netcoreapp2.1/Library.runtimeconfig.dev.json
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/bin/Debug/netcoreapp2.1/Library.dll
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/bin/Debug/netcoreapp2.1/Library.pdb
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.csproj.AssemblyReference.cache
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.GeneratedMSBuildEditorConfig.editorconfig
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.AssemblyInfoInputs.cache
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.AssemblyInfo.cs
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.csproj.CoreCompileInputs.cache
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.dll
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.pdb
+/Users/oliver/Documents/Projects/C_Sharp_Lib/Library/obj/Debug/netcoreapp2.1/Library.genruntimeconfig.cache
