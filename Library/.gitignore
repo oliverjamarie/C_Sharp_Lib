@@ -1,0 +1,5 @@
+# Build Results
+/bin
+/obj
+
+.vs/
