@@ -9,7 +9,7 @@ namespace Library
     {
         public static void Main()
         {
-            testGraph2();
+            testGraph3();
         }
 
         private static void testGraph1()
@@ -29,7 +29,6 @@ namespace Library
             adjacenyList(graph);
             adjacenyList(graph);
         }
-
 
         private static void testGraph2()
         {
@@ -62,6 +61,41 @@ namespace Library
             traversal(graph);
         }
 
+        private static void testGraph3()
+        {
+            Graph<int> graph = new Graph<int>();
+
+            for (int i = 1; i <= 8; i++)
+            {
+                graph.insert(i);
+            }
+
+            graph.connectNodes(1, 2, 9);
+            graph.connectNodes(1, 3, 5);
+
+            graph.connectNodes(2, 1, 3);
+            graph.connectNodes(2, 4, 18);
+
+            graph.connectNodes(3, 4, 12);
+
+            graph.connectNodes(4, 8, 8);
+
+            graph.connectNodes(5, 4, 9);
+            graph.connectNodes(5, 6, 2);
+            graph.connectNodes(5, 7, 5);
+            graph.connectNodes(5, 8, 3);
+
+            graph.connectNodes(6, 7, 1);
+
+            graph.connectNodes(7, 5, 4);
+            graph.connectNodes(7, 8, 6);
+
+            graph.connectNodes(8, 5, 3);
+
+            adjacenyList(graph);
+            adjacencyMatrix(graph);
+            traversal(graph);
+        }
 
         private static void traversal(Graph<int> graph)
         {
