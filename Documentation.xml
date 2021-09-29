@@ -22,7 +22,118 @@
             <summary>
             Constructor using an adjacency list
             </summary>
-            <param name="adjList"></param>
+            <param name="adjList"> Key: source node; Value: list of destination nodes </param>
+        </member>
+        <member name="M:Library.Graph.Graph`1.#ctor(System.Collections.Generic.Dictionary{`0,System.Collections.Generic.Dictionary{`0,System.Double}})">
+            <summary>
+            Constructor using an adjacency list (includes weights to destination nodes)
+            </summary>
+            <param name="adjList">
+            <list type="table">
+                <item><term>Key</term><description>Source node</description></item>
+                <item><term>Value</term><description>Dictionary containing the target nodes and the weight of their edges</description></item>
+            </list>
+            </param>
+        </member>
+        <member name="M:Library.Graph.Graph`1.existsInGraph(`0)">
+            <summary> Checks if a node exists in  <code>nodes</code>.  Dependent on <code>Find(T)</code> method
+            </summary>
+            <param name="data"></param>
+            <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.Find(`0)">
+            <summary>
+            Finds node having <code>data</code> as <code>Node.data</code>
+            </summary>
+            <param name="data"></param>
+            <returns>A Node from <code>nodes</code> having <code>data</code> as <code>Node.data</code>. Returns NULL if not found</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.insertNode(Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Inserts node  in <code>nodes</code> 
+            </summary>
+            <param name="n">Node n</param>
+            <returns>TRUE if <code>nodes</code> does not contain <code>n</code>, FALSE otherwise</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.insert(`0)">
+            <summary>
+            Inserts new node into <code>nodes</code>.  Dependent on <code>Insert(Node)</code> method
+            </summary>
+            <param name="t">What to add to the list of <code>nodes</code></param>
+            <returns>Return value is <code>insert(Node)</code></returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.connectNodes(`0,`0,System.Double)">
+            <summary>
+            Connects two nodes
+            </summary>
+            <param name="start"> Start Node </param>
+            <param name="dest"> Destination Node</param>
+            <param name="cost"> Cost to travel from <code>start</code> to <code>dest</code></param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.connectNodes(`0,System.Collections.Generic.Dictionary{`0,System.Double})">
+            <summary>
+            Connects <paramref name="start"/> to all nodes in <paramref name="targets"/> keeping track of their cost
+            </summary>
+            <param name="start">Start node</param>
+            <param name="targets">Dictionary of target nodes and their weights</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.connectNodes(`0,System.Collections.Generic.List{`0})">
+            <summary>
+            Connects <paramref name="start"/> to all nodes in <paramref name="targets"/>
+            </summary>
+            <param name="start">Start Node</param>
+            <param name="targets">List of target nodes</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.connectNodes(Library.Graph.Graph{`0}.Node,Library.Graph.Graph{`0}.Node,System.Double)">
+            <summary>
+            Connects two Node objects 
+            </summary>
+            <param name="start">Start Node</param>
+            <param name="end">Target Node</param>
+            <param name="cost">Cost for <paramref name="start"/> to travel to <paramref name="end"/></param>
+            <returns>TRUE if <code>nodes</code>does not contain <paramref name="start"/> or <paramref name="end"/></returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.dispGraphBFT">
+            <summary>
+            Displays graph using Breadth First Traversal
+            </summary>
+        </member>
+        <member name="M:Library.Graph.Graph`1.dispGraphDFT">
+            <summary>
+            Displays graph using Depth First Traversal
+            </summary>
+        </member>
+        <member name="M:Library.Graph.Graph`1.dispGraphDFT(Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Displays graph using Depth First Traversal starting from <code>node</code>
+            </summary>
+            <param name="node">Root Node</param>
+        </member>
+        <member name="M:Library.Graph.Graph`1.resetVisitedNodes">
+            <summary>
+            Resets all nodes in <code>nodes</code> list not visited
+            </summary>
+        </member>
+        <member name="M:Library.Graph.Graph`1.getAdjacencyMatrix">
+            <summary>
+            Generates unweighted adjacency matirx.
+            </summary>
+            <returns>A square matrix of size <code>nodes.Count</code> of 1s (connection exists) and 0s (connection does not exist).</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.getAdjacencyList">
+            <summary>
+            Generates adjacency list
+            </summary>
+            <returns>Adjacency list as a Dictionary</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.getSize">
+            <summary>
+            Gets the size of <code>nodes.Count</code>
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>
