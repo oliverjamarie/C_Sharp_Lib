@@ -32,7 +32,11 @@ namespace Library.Graph
             }
         }
 
-        // used to create a graph based off an adjacency list
+
+        /// <summary>
+        /// Constructor using an adjacency list
+        /// </summary>
+        /// <param name="adjList"> Key: source node; Value: list of destination nodes </param>
         public Graph(Dictionary<T,List<T>> adjList)
         {
             nodes = new List<Node>();
@@ -55,8 +59,15 @@ namespace Library.Graph
             }
         }
 
-        // used to create a graph based off an adjacency list
-        // (includes weights)
+        /// <summary>
+        /// Constructor using an adjacency list (includes weights to destination nodes)
+        /// </summary>
+        /// <param name="adjList">
+        /// <list type="table">
+        ///     <item><term>Key</term><description>Source node</description></item>
+        ///     <item><term>Value</term><description>Dictionary containing the target nodes and the weight of their edges</description></item>
+        /// </list>
+        /// </param>
         public Graph(Dictionary<T, Dictionary<T,double>> adjList)
         {
             nodes = new List<Node>();
@@ -79,6 +90,10 @@ namespace Library.Graph
             }
         }
 
+        /// <summary> Checks if a node exists in  <code>nodes</code>.  Dependent on <code>Find(T)</code> method
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
         private bool existsInGraph(T data)
         {
             foreach(Node node in nodes)
@@ -92,6 +107,11 @@ namespace Library.Graph
             return false; 
         }
 
+        /// <summary>
+        /// Finds node having <code>data</code> as <code>Node.data</code>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>A Node from <code>nodes</code> having <code>data</code> as <code>Node.data</code>. Returns NULL if not found</returns>
         private Node Find(T data)
         {
             foreach (Node node in nodes)
@@ -105,7 +125,12 @@ namespace Library.Graph
             return null;
         }
 
-        public bool insertNode(Node n)
+        /// <summary>
+        /// Inserts node  in <code>nodes</code> 
+        /// </summary>
+        /// <param name="n">Node n</param>
+        /// <returns>TRUE if <code>nodes</code> does not contain <code>n</code>, FALSE otherwise</returns>
+        private bool insertNode(Node n)
         {
             if (nodes.Contains(n))
                 return false;
@@ -115,11 +140,25 @@ namespace Library.Graph
             return true;
         }
 
+
+        /// <summary>
+        /// Inserts new node into <code>nodes</code>.  Dependent on <code>Insert(Node)</code> method
+        /// </summary>
+        /// <param name="t">What to add to the list of <code>nodes</code></param>
+        /// <returns>Return value is <code>insert(Node)</code></returns>
         public bool insert(T t)
         {
             return insertNode(new Node(t));
         }
 
+
+        /// <summary>
+        /// Connects two nodes
+        /// </summary>
+        /// <param name="start"> Start Node </param>
+        /// <param name="dest"> Destination Node</param>
+        /// <param name="cost"> Cost to travel from <code>start</code> to <code>dest</code></param>
+        /// <returns></returns>
         public bool connectNodes(T start, T dest, double cost)
         {
             Node startNode = Find(start), destNode = Find(dest);
@@ -130,6 +169,12 @@ namespace Library.Graph
             return false;
         }
 
+        /// <summary>
+        /// Connects <paramref name="start"/> to all nodes in <paramref name="targets"/> keeping track of their cost
+        /// </summary>
+        /// <param name="start">Start node</param>
+        /// <param name="targets">Dictionary of target nodes and their weights</param>
+        /// <returns></returns>
         public bool connectNodes(T start, Dictionary<T,double> targets)
         {
             foreach(KeyValuePair<T,double> pair in targets) {
@@ -142,6 +187,12 @@ namespace Library.Graph
             return true;
         }
 
+        /// <summary>
+        /// Connects <paramref name="start"/> to all nodes in <paramref name="targets"/>
+        /// </summary>
+        /// <param name="start">Start Node</param>
+        /// <param name="targets">List of target nodes</param>
+        /// <returns></returns>
         public bool connectNodes(T start, List<T> targets)
         {
             foreach(T t in targets)
@@ -155,7 +206,13 @@ namespace Library.Graph
             return true;
         }
 
-
+        /// <summary>
+        /// Connects two Node objects 
+        /// </summary>
+        /// <param name="start">Start Node</param>
+        /// <param name="end">Target Node</param>
+        /// <param name="cost">Cost for <paramref name="start"/> to travel to <paramref name="end"/></param>
+        /// <returns>TRUE if <code>nodes</code>does not contain <paramref name="start"/> or <paramref name="end"/></returns>
         private bool connectNodes(Node start, Node end, double cost)
         {
             if ((nodes.Contains(start) && nodes.Contains(end)) == false)
@@ -164,6 +221,10 @@ namespace Library.Graph
             return start.connectNode(end, cost);
         }
 
+
+        /// <summary>
+        /// Displays graph using Breadth First Traversal
+        /// </summary>
         public void dispGraphBFT()
         {
 
@@ -197,7 +258,9 @@ namespace Library.Graph
             Console.WriteLine("");
         }
 
-
+        /// <summary>
+        /// Displays graph using Depth First Traversal
+        /// </summary>
         public void dispGraphDFT()
         {
             resetVisitedNodes();
@@ -205,6 +268,10 @@ namespace Library.Graph
             Console.WriteLine("");
         }
 
+        /// <summary>
+        /// Displays graph using Depth First Traversal starting from <code>node</code>
+        /// </summary>
+        /// <param name="node">Root Node</param>
         private void dispGraphDFT(Node node)
         {
             Console.Write($"{node.data}\t");
@@ -224,6 +291,9 @@ namespace Library.Graph
             }
         }
 
+        /// <summary>
+        /// Resets all nodes in <code>nodes</code> list not visited
+        /// </summary>
         public void resetVisitedNodes()
         {
             foreach (Node node in nodes)
@@ -232,6 +302,10 @@ namespace Library.Graph
             }
         }
 
+        /// <summary>
+        /// Generates unweighted adjacency matirx.
+        /// </summary>
+        /// <returns>A square matrix of size <code>nodes.Count</code> of 1s (connection exists) and 0s (connection does not exist).</returns>
         public int[,] getAdjacencyMatrix()
         {
             int[,] matrix = new int[nodes.Count, nodes.Count];
@@ -252,7 +326,10 @@ namespace Library.Graph
             return matrix;
         }
         
-
+        /// <summary>
+        /// Generates adjacency list
+        /// </summary>
+        /// <returns>Adjacency list as a Dictionary</returns>
         public Dictionary<T, List<T>> getAdjacencyList(){
             Dictionary<T, List<T>> dict = new Dictionary<T, List<T>>();
 
@@ -263,6 +340,11 @@ namespace Library.Graph
             return dict;
         }
 
+
+        /// <summary>
+        /// Gets the size of <code>nodes.Count</code>
+        /// </summary>
+        /// <returns></returns>
         public int getSize()
         {
             return nodes.Count;
