@@ -1,4 +1,5 @@
 # C_Sharp_Lib
-**Welcome to the Dev/Windows Branch**
-This is just a development branch for a Windows 10 system with **.NET 4.0**
 Data Structure Library for C#
+**Welcome to the Dev/Windows Branch**
+This is just a development branch for a Windows 10 system with **.NET 4.0**. This branch will eventually be merged with a different branch
+
