@@ -10,6 +10,7 @@ namespace Library
         public static void Main()
         {
             testGraph3();
+            Console.ReadLine();
         }
 
         private static void testGraph1()
