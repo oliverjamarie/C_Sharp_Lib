@@ -7,17 +7,35 @@
             Node destNode;
             double cost;
 
+
+            /// <summary>
+            /// Edge constructor
+            /// </summary>
+            /// <param name="targetNode">Edge's destination node</param>
+            /// <param name="cost">Cost to travel through the edge to the destination node</param>
             public Edge(Node targetNode, double cost)
             {
                 this.destNode = targetNode;
                 this.cost = cost;
             }
 
+
+            /// <summary>
+            /// Returns the edge's destination node
+            /// </summary>
+            /// <returns>
+            /// Node
+            /// </returns>
             public Node getDestNode()
             {
                 return destNode;
             }
 
+
+            /// <summary>
+            /// Returns the cost to go the edge's destination node
+            /// </summary>
+            /// <returns>cost</returns>
             public double getCost()
             {
                 return cost;
