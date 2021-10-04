@@ -44,8 +44,6 @@ namespace Library.Graph
                     insert(pair.Key);
                 }
 
-                Console.Write($"{pair.Key} \t");
-
                 foreach(T t in pair.Value)
                 {
                     if (existsInGraph(t) == false)
