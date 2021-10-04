@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Graph
 {
-    partial class Graph<T>
+    public partial class Graph<T>
     {
 
         List<Node> nodes;
