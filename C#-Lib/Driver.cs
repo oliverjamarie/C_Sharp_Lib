@@ -9,7 +9,6 @@ namespace Library
     {
         public static void Main()
         {
-            testGraph3();
             Console.ReadLine();
         }
 
@@ -98,6 +97,53 @@ namespace Library
             traversal(graph);
         }
 
+        private static void testGraphConstructor()
+        {
+            int[,] matrix = {
+                { 0, 1, 1, 1, 1, 1 },
+                { 1, 0, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0 }
+            };
+
+            Dictionary<int, List<int>> dict = new Dictionary<int, List<int>>();
+            List<int> list = new List<int>();
+
+            for (int i = 1; i <= 5; i++)
+            {
+                list.Add(i);
+            }
+
+            dict.Add(0, list);
+
+            list = new List<int>();
+            list.Add(0);
+
+            for (int i = 1; i <= 5; i++)
+            {
+                dict.Add(i, list);
+            }
+
+            foreach(KeyValuePair<int, List<int>> keyValuePair in dict)
+            {
+                Console.Write(keyValuePair.Key);
+
+                foreach(int x in keyValuePair.Value)
+                {
+                    Console.Write($"-- {x} \t");
+                }
+                Console.WriteLine();
+            }
+
+            Graph<int> graph = new Graph<int>(dict);
+            
+            traversal(graph);
+            adjacencyMatrix(graph);
+        }
+
+
         private static void traversal(Graph<int> graph)
         {
             Console.WriteLine("BREADTH FIRST TRAVERSAL \n ------");
@@ -138,3 +184,4 @@ namespace Library
         }
     }
 }
+

@@ -1,3 +1,4 @@
+
 .vs
 .vscode
 *.DS_Store
@@ -353,3 +354,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/GraphUnitTesting
+

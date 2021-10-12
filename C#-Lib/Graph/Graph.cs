@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Graph
 {
-    partial class Graph<T>
+    public partial class Graph<T>
     {
 
         List<Node> nodes;
@@ -54,7 +54,6 @@ namespace Library.Graph
                     {
                         insert(t);
                     }
-
                     connectNodes(pair.Key, t, 1);
                 }
             }
