@@ -24,7 +24,7 @@
             /// Returns the edge's destination node
             /// </summary>
             /// <returns>
-            /// Node
+            /// Destination node
             /// </returns>
             public Node getDestNode()
             {
@@ -35,7 +35,7 @@
             /// <summary>
             /// Returns the cost to go the edge's destination node
             /// </summary>
-            /// <returns>cost</returns>
+            /// <returns>Cost to destination node</returns>
             public double getCost()
             {
                 return cost;
