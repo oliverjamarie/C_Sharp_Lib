@@ -40,11 +40,6 @@
             {
                 return cost;
             }
-
-            public void setCost(double cost)
-            {
-                this.cost = cost;
-            }
         }
     }
 }
