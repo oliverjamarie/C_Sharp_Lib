@@ -7,9 +7,19 @@ namespace Library.Graph
     {
         public class Node
         {
+            /// <summary>
+            /// Node's connections
+            /// </summary>
             private List<Edge> connections;
 
+            /// <summary>
+            /// Has the node been visited?
+            /// </summary>
             public bool visited;
+
+            /// <summary>
+            /// Can a node connect to itself?
+            /// </summary>
             private bool allowSelfConnection;
 
             public T data{ get; set; }
@@ -30,17 +40,16 @@ namespace Library.Graph
                 this.allowSelfConnection = allowSelfConnection;
             }
 
-            //public T getData()
-            //{
-            //    return data;
-            //}
-
-            //public bool setData(T data)
-            //{
-            //    this.data = data;
-            //    return true;
-            //}
-
+            /// <summary>
+            /// Connects two nodes
+            /// </summary>
+            /// <param name="destNode">Destination node</param>
+            /// <param name="cost">Cost to travel to node</param>
+            /// <returns>
+            /// FALSE if <code>allowSelfConnection</code> is FALSE && the node equals <paramref name="destNode"/>
+            /// FALSE if a connection to <paramref name="destNode"/> already exists
+            /// TRUE otherwise
+            /// </returns>
             public bool connectNode(Node destNode, double cost)
             {
                 if (this.Equals(destNode) && !allowSelfConnection)
@@ -54,10 +63,26 @@ namespace Library.Graph
                 }
 
                 connections.Add(new Edge(destNode, cost));
-
+                
                 return true;
             }
 
+            public Dictionary<T, double> getWeightedConnections()
+            {
+                Dictionary<T, double> dict = new Dictionary<T, double>();
+                
+                foreach(Edge edge in connections)
+                {
+                    dict.Add(edge.getDestNode().data, edge.getCost());
+                }
+
+                return dict;
+            }
+
+            /// <summary>
+            /// Get list of connected nodes
+            /// </summary>
+            /// <returns>list of connected nodes </returns>
             public List<Node> getConnectedNodes()
             {
                 List<Node> nodes = new List<Node>();
@@ -69,6 +94,35 @@ namespace Library.Graph
                 return nodes;
             }
 
+            public List<Node> getConnectedNodesSorted()
+            {
+                List<Node> unsorted = getConnectedNodes();
+                List<Node> sorted = new List<Node>();
+                T min = unsorted[0].data;
+                
+                while(unsorted.Count > 0)
+                {
+                    int minIndex = 0;
+
+                    for (int i = 0; i < unsorted.Count; i++)
+                    {
+                        if (unsorted[i].data.CompareTo(min) <= 0)
+                        {
+                            minIndex = i;
+                            min = unsorted[i].data;
+                        }
+                    }
+                    sorted.Add(unsorted[minIndex]);
+                    unsorted.RemoveAt(minIndex);
+                }
+
+                return sorted;
+            }
+
+            /// <summary>
+            /// Gets a list of the datapoints connected to the node
+            /// </summary>
+            /// <returns>List<typeparamref name="T"/></returns>
             public List<T> getConnectionsData()
             {
                 List<T> list = new List<T>();
@@ -82,19 +136,68 @@ namespace Library.Graph
                 return list;
             }
 
+            /// <summary>
+            /// Get the edges the node is connected to
+            /// </summary>
+            /// <returns>List of edges connected to node</returns>
             public List<Edge> getConnections()
             {
                 return connections;
             }
 
+            /// <summary>
+            /// Creates a sorted <code>List<Edge></code> based off the connection's cost
+            /// </summary>
+            /// <returns></returns>
+            public List<Edge> getConnectionsSorted()
+            {
+                List<Edge> unsorted = new List<Edge>(connections);
+                List<Edge> sorted = new List<Edge>();
+                int minIndex;
+
+                while (unsorted.Count > 0)
+                {
+                    minIndex = 0;
+                    Edge min = unsorted[minIndex];
+
+                    for (int i = 0; i < unsorted.Count; i++)
+                    {
+                        if (unsorted[i].getCost() < unsorted[minIndex].getCost())
+                        {
+                            minIndex = i;
+                            min = unsorted[i];
+                        }
+                    }
+                    sorted.Add(min);
+                    unsorted.RemoveAt(minIndex);
+                }
+
+                return sorted;
+            }
+
+            /// <summary>
+            /// Compares this node with <paramref name="other"/>
+            /// </summary>
+            /// <param name="other">Node to compare to</param>
+            /// <returns>TRUE if equal.  FALSE otherwise</returns>
             public bool Equals(Node other)
             {
                 return data.Equals(other.data);
             }
-
-            public override bool Equals(object obj)
+            
+            public bool updateConnection(Node dest, double cost)
             {
-                return Equals(obj as Node);
+                foreach(Edge edge in connections)
+                {
+                    if (edge.getDestNode().Equals(dest))
+                    {
+                        edge.setCost(cost);
+
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
     }
