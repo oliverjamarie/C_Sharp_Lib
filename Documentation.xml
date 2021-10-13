@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Library</name>
+    </assembly>
+    <members>
+        <member name="M:Library.Graph.Graph`1.Edge.getDestNode">
+            <summary>
+            Returns the edge's destination node
+            </summary>
+            <returns>
+            Node
+            </returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.Edge.getCost">
+            <summary>
+            Returns the cost to go the edge's destination node
+            </summary>
+            <returns>cost</returns>
+        </member>
+        <member name="M:Library.Graph.Graph`1.#ctor(System.Collections.Generic.Dictionary{`0,System.Collections.Generic.List{`0}})">
+            <summary>
+            Constructor using an adjacency list
+            </summary>
+            <param name="adjList"></param>
+        </member>
+    </members>
+</doc>
