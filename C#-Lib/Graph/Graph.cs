@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Graph
 {
-    public partial class Graph<T> where T : IComparable
+    public partial class Graph<T>
     {
 
         List<Node> nodes;
@@ -90,17 +90,15 @@ namespace Library.Graph
             }
         }
 
-        /// <summary> 
-        /// Checks if a node exists in  <code>nodes</code> based on the data a node containts.
-        /// Dependent on <code>Find(T)</code> method
+        /// <summary> Checks if a node exists in  <code>nodes</code>.  Dependent on <code>Find(T)</code> method
         /// </summary>
-        /// <param name="nodeData">Node you're looking for </param>
+        /// <param name="data"></param>
         /// <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
-        private bool existsInGraph(T nodeData)
+        private bool existsInGraph(T data)
         {
             foreach(Node node in nodes)
             {
-                if (node.data.Equals(nodeData))
+                if (node.data.Equals(data))
                 {
                     return true;
                 }
@@ -342,46 +340,14 @@ namespace Library.Graph
             return dict;
         }
 
-        public Dictionary<T, Dictionary<T, double>> getWeightedAdjacencyList()
-        {
-            Dictionary<T, Dictionary<T, double>> dict = new Dictionary<T, Dictionary<T, double>>();
-            foreach(Node node in nodes)
-            {
-                dict.Add(node.data, node.getWeightedConnections());
-            }
-            return dict;
-        }
 
         /// <summary>
         /// Gets the size of <code>nodes.Count</code>
         /// </summary>
-        /// <returns>Number of nodes in graph</returns>
+        /// <returns></returns>
         public int getSize()
         {
             return nodes.Count;
-        }
-
-        private bool updateConnection(Node source, Node dest, double cost)
-        {
-            return source.updateConnection(dest, cost);
-        }
-
-        public bool updateConnection(T source, T dest, double cost)
-        {
-            Node sourceNode = Find(source);
-            Node destNode = Find(dest);
-
-            if (sourceNode == null || destNode == null)
-            {
-                return false;
-            }
-
-            return updateConnection(sourceNode, destNode, cost); 
-        }
-
-        public Node getRoot()
-        {
-            return nodes[0];
         }
     }
 }
