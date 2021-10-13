@@ -1,5 +1,6 @@
 ﻿using System;
 using Library.Graph;
+using Library.Algorithms;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace Library
     {
         public static void Main()
         {
-            testGraphConstructor();
+            testPreferredAttach();
             Console.ReadLine();
         }
 
@@ -100,14 +101,6 @@ namespace Library
 
         private static void testGraphConstructor()
         {
-            int[,] matrix = {
-                { 0, 1, 1, 1, 1, 1 },
-                { 1, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0 },
-                { 1, 0, 0, 0, 0, 0 }
-            };
 
             Dictionary<int, List<int>> dict = new Dictionary<int, List<int>>();
             List<int> list = new List<int>();
@@ -144,6 +137,53 @@ namespace Library
             adjacencyMatrix(graph);
         }
 
+        private static void testGraphConstructor2()
+        {
+            Dictionary<int, Dictionary<int, double>> dict = new Dictionary<int, Dictionary<int, double>>();
+            Dictionary<int, double> adjList = new Dictionary<int, double>();
+
+
+            // 0
+            adjList.Add(1, .8);
+            adjList.Add(2, .5);
+            adjList.Add(3, .1);
+            adjList.Add(4, .2);
+            adjList.Add(5, .7);
+
+            dict.Add(0, adjList);
+
+            // 1
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .81);
+            dict.Add(1, adjList);
+
+            // 2
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .51);
+            dict.Add(2, adjList);
+
+            // 3
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .11);
+            dict.Add(3, adjList);
+
+            // 4
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .21);
+            dict.Add(4, adjList);
+
+            // 5
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .71);
+            dict.Add(5, adjList);
+
+            Graph<int> graph = new Graph<int>(dict);
+
+            adjacencyMatrix(graph);
+            adjacenyList(graph);
+            traversal(graph);
+        }
+
 
         private static void traversal(Graph<int> graph)
         {
@@ -169,6 +209,22 @@ namespace Library
             }
         }
 
+        private static void weightedAdjacenyList(Graph<int> graph)
+        {
+            Console.WriteLine("WEIGHTED ADJACENCY LIST \n ------");
+            Dictionary<int, Dictionary<int, double>> dictionary = graph.getWeightedAdjacencyList();
+
+            foreach (KeyValuePair<int, Dictionary<int,double>> pair in dictionary)
+            {
+                Console.Write("{0}: \t", pair.Key);
+                foreach(KeyValuePair<int, double> subPair in pair.Value)
+                {
+                    Console.Write($"({subPair.Key} , {subPair.Value}) \t");
+                }
+                Console.Write("\n");
+            }
+        }
+
         private static void adjacencyMatrix(Graph<int> graph)
         {
             Console.WriteLine("ADJACENCY MATRIX \n ------");
@@ -182,6 +238,69 @@ namespace Library
                 }
                 Console.WriteLine(";");
             }
+        }
+
+        private static void testPreferredAttach()
+        {
+            Dictionary<int, Dictionary<int, double>> dict = new Dictionary<int, Dictionary<int, double>>();
+            Dictionary<int, double> adjList = new Dictionary<int, double>();
+
+
+            // 0
+            adjList.Add(1, .8);
+            adjList.Add(2, .5);
+            adjList.Add(3, .1);
+            adjList.Add(4, .2);
+            adjList.Add(5, .7);
+
+            dict.Add(0, adjList);
+
+            // 1
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .81);
+            dict.Add(1, adjList);
+
+            // 2
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .51);
+            dict.Add(2, adjList);
+
+            // 3
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .11);
+            dict.Add(3, adjList);
+
+            // 4
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .21);
+            dict.Add(4, adjList);
+
+            // 5
+            adjList = new Dictionary<int, double>();
+            adjList.Add(0, .71);
+            dict.Add(5, adjList);
+
+            Graph<int> graph = new Graph<int>(dict);
+
+            traversal(graph);
+            weightedAdjacenyList(graph);
+
+            Console.WriteLine("\n\n PREFERRED ATTACHMENT\n ------------\n");
+            PreferredAttachment<int> preferredAttachment = 
+                new PreferredAttachment<int> (dict);
+
+            weightedAdjacenyList(preferredAttachment.graph);
+
+            Queue<int> queue = preferredAttachment.genQueue(5);
+            Console.WriteLine("PRE QUEUE");
+            foreach (int num in queue)
+            {
+                Console.Write($"{num}, \t");
+            }
+
+            Console.WriteLine("\nPOST QUEUE");
+            weightedAdjacenyList(preferredAttachment.graph);
+
         }
     }
 }
