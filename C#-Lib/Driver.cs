@@ -245,61 +245,53 @@ namespace Library
             Dictionary<int, Dictionary<int, double>> dict = new Dictionary<int, Dictionary<int, double>>();
             Dictionary<int, double> adjList = new Dictionary<int, double>();
 
-
-            // 0
-            adjList.Add(1, .8);
-            adjList.Add(2, .5);
-            adjList.Add(3, .1);
-            adjList.Add(4, .2);
-            adjList.Add(5, .7);
-
+            // E
+            adjList.Add(0, 0.2);
+            adjList.Add(1, 0.3);
+            adjList.Add(2, 0.3);
             dict.Add(0, adjList);
 
-            // 1
+            // Con
             adjList = new Dictionary<int, double>();
-            adjList.Add(0, .81);
+            adjList.Add(0, 0.3);
+            adjList.Add(1, 0.3);
+            adjList.Add(2, 0.4);
             dict.Add(1, adjList);
 
-            // 2
+            // Cov
             adjList = new Dictionary<int, double>();
-            adjList.Add(0, .51);
+            adjList.Add(0, 0.2);
+            adjList.Add(1, 0.5);
+            adjList.Add(2, 0.2);
             dict.Add(2, adjList);
 
-            // 3
-            adjList = new Dictionary<int, double>();
-            adjList.Add(0, .11);
-            dict.Add(3, adjList);
-
-            // 4
-            adjList = new Dictionary<int, double>();
-            adjList.Add(0, .21);
-            dict.Add(4, adjList);
-
-            // 5
-            adjList = new Dictionary<int, double>();
-            adjList.Add(0, .71);
-            dict.Add(5, adjList);
-
-            Graph<int> graph = new Graph<int>(dict);
-
-            traversal(graph);
-            weightedAdjacenyList(graph);
-
-            Console.WriteLine("\n\n PREFERRED ATTACHMENT\n ------------\n");
-            PreferredAttachment<int> preferredAttachment = 
-                new PreferredAttachment<int> (dict);
+            PreferredAttachment<int> preferredAttachment = new PreferredAttachment<int>(dict);
+            preferredAttachment.setCostModifier(0.1);
 
             weightedAdjacenyList(preferredAttachment.graph);
 
-            Queue<int> queue = preferredAttachment.genQueue(5);
-            Console.WriteLine("PRE QUEUE");
-            foreach (int num in queue)
+            for(int i = 0; i < 5; i++)
             {
-                Console.Write($"{num}, \t");
-            }
+                Queue<int> queue = preferredAttachment.genQueue(30);
+                Console.WriteLine($"\n\nRAND LIST {i}");
+                foreach (int num in queue)
+                {
+                    if (num == 0)
+                    {
+                        Console.Write("E \t");
+                    }
+                    else if (num == 1)
+                    {
+                        Console.Write("Con \t");
+                    }
+                    else
+                    {
+                        Console.Write("Cov \t");
+                    }
+                }
 
-            Console.WriteLine("\nPOST QUEUE");
-            weightedAdjacenyList(preferredAttachment.graph);
+                Console.WriteLine();
+            }
 
         }
     }
