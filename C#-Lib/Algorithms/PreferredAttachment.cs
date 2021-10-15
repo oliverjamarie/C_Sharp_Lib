@@ -39,14 +39,27 @@ namespace Library.Algorithms
             init();
         }
 
-        public PreferredAttachment(Graph<int> graph1)
+        public PreferredAttachment(Graph<T> graph)
         {
+            this.graph = new Graph<T>(graph);
+            init();
         }
 
         private void init()
         {
             graph.allowSelfConnect = true;
             costModifier = 0.05;
+        }
+
+        public bool setCostModifier(double modifier)
+        {
+            if (modifier >= 0 && modifier <= 1.0)
+            {
+                costModifier = modifier + 1;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -58,8 +71,13 @@ namespace Library.Algorithms
         public Queue<T> genQueue(int len)
         {
             Queue<T> queue = new Queue<T>();
-            Graph<T>.Node curr = graph.getRoot();
-            List<Graph<T>.Edge> sortedConnections;        
+            Graph<T> copyGraph = new Graph<T>(graph);
+            Graph<T>.Node curr = copyGraph.getRoot();
+            List<Graph<T>.Edge> sortedConnections;
+
+            // Need to specify System.Random as it the library is meant for Unity
+            // and they have their own Random class
+
             System.Random rnd = new System.Random();
             double randNum;
             int index, foundIndex;
@@ -67,7 +85,7 @@ namespace Library.Algorithms
             if (curr == null)
                 return queue;
 
-            for (int i = 0; i < len; i++)
+            while (queue.Count < len)
             {
                 index = 0;
                 foundIndex = 0;
@@ -83,6 +101,10 @@ namespace Library.Algorithms
                         foundIndex = index;
                         break;
                     }
+                    else
+                    {
+                        randNum -= edge.getCost();
+                    }
                     index++;
                 }
 
@@ -97,11 +119,11 @@ namespace Library.Algorithms
 
                     if (j == foundIndex)
                     {
-                        cost += costModifier;
+                        cost /= costModifier;
                     }
                     else
                     {
-                        cost -= costModifier;
+                        cost *= costModifier;
                     }
 
                     curr.updateConnection(sortedConnections[j].getDestNode(), cost);
