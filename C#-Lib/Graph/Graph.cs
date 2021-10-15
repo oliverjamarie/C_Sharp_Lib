@@ -13,7 +13,7 @@ namespace Library.Graph
         public Graph()
         {
             nodes = new List<Node>();
-            allowSelfConnect = false;
+            allowSelfConnect = true;
         }
 
         public Graph(bool allowSelfConnect)
@@ -22,14 +22,20 @@ namespace Library.Graph
             nodes = new List<Node>();
         }
 
-        public Graph(List<T> list)
+        public Graph(List<T> list):this()
         {
             nodes = new List<Node>();
-            
+            allowSelfConnect = true;
             foreach(T i in list)
             {
                 insert(i);
             }
+           
+        }
+
+        public Graph(Graph<T> graph):this(graph.getWeightedAdjacencyList())
+        {
+            allowSelfConnect = true;
         }
 
 
@@ -39,6 +45,7 @@ namespace Library.Graph
         /// <param name="adjList"> Key: source node; Value: list of destination nodes </param>
         public Graph(Dictionary<T,List<T>> adjList)
         {
+            allowSelfConnect = true;
             nodes = new List<Node>();
 
             foreach(KeyValuePair<T, List<T>> pair in adjList)
@@ -68,7 +75,7 @@ namespace Library.Graph
         ///     <item><term>Value</term><description>Dictionary containing the target nodes and the weight of their edges</description></item>
         /// </list>
         /// </param>
-        public Graph(Dictionary<T, Dictionary<T,double>> adjList)
+        public Graph(Dictionary<T, Dictionary<T,double>> adjList):this()
         {
             nodes = new List<Node>();
 
