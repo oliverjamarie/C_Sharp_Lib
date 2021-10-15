@@ -31,6 +31,11 @@
                 return destNode;
             }
 
+            public void setCost(double cost)
+            {
+                this.cost = cost;
+            }
+
 
             /// <summary>
             /// Returns the cost to go the edge's destination node
