@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Library.Graph
 {
-    public partial class Graph<T>
+    public partial class Graph<T> where T : IComparable
     {
 
         List<Node> nodes;
@@ -13,7 +13,7 @@ namespace Library.Graph
         public Graph()
         {
             nodes = new List<Node>();
-            allowSelfConnect = false;
+            allowSelfConnect = true;
         }
 
         public Graph(bool allowSelfConnect)
@@ -22,14 +22,20 @@ namespace Library.Graph
             nodes = new List<Node>();
         }
 
-        public Graph(List<T> list)
+        public Graph(List<T> list):this()
         {
             nodes = new List<Node>();
-            
+            allowSelfConnect = true;
             foreach(T i in list)
             {
                 insert(i);
             }
+           
+        }
+
+        public Graph(Graph<T> graph):this(graph.getWeightedAdjacencyList())
+        {
+            allowSelfConnect = true;
         }
 
 
@@ -39,6 +45,7 @@ namespace Library.Graph
         /// <param name="adjList"> Key: source node; Value: list of destination nodes </param>
         public Graph(Dictionary<T,List<T>> adjList)
         {
+            allowSelfConnect = true;
             nodes = new List<Node>();
 
             foreach(KeyValuePair<T, List<T>> pair in adjList)
@@ -68,7 +75,7 @@ namespace Library.Graph
         ///     <item><term>Value</term><description>Dictionary containing the target nodes and the weight of their edges</description></item>
         /// </list>
         /// </param>
-        public Graph(Dictionary<T, Dictionary<T,double>> adjList)
+        public Graph(Dictionary<T, Dictionary<T,double>> adjList):this()
         {
             nodes = new List<Node>();
 
@@ -90,15 +97,17 @@ namespace Library.Graph
             }
         }
 
-        /// <summary> Checks if a node exists in  <code>nodes</code>.  Dependent on <code>Find(T)</code> method
+        /// <summary> 
+        /// Checks if a node exists in  <code>nodes</code> based on the data a node containts.
+        /// Dependent on <code>Find(T)</code> method
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="nodeData">Node you're looking for </param>
         /// <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
-        private bool existsInGraph(T data)
+        private bool existsInGraph(T nodeData)
         {
             foreach(Node node in nodes)
             {
-                if (node.data.Equals(data))
+                if (node.data.Equals(nodeData))
                 {
                     return true;
                 }
@@ -340,14 +349,46 @@ namespace Library.Graph
             return dict;
         }
 
+        public Dictionary<T, Dictionary<T, double>> getWeightedAdjacencyList()
+        {
+            Dictionary<T, Dictionary<T, double>> dict = new Dictionary<T, Dictionary<T, double>>();
+            foreach(Node node in nodes)
+            {
+                dict.Add(node.data, node.getWeightedConnections());
+            }
+            return dict;
+        }
 
         /// <summary>
         /// Gets the size of <code>nodes.Count</code>
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Number of nodes in graph</returns>
         public int getSize()
         {
             return nodes.Count;
+        }
+
+        private bool updateConnection(Node source, Node dest, double cost)
+        {
+            return source.updateConnection(dest, cost);
+        }
+
+        public bool updateConnection(T source, T dest, double cost)
+        {
+            Node sourceNode = Find(source);
+            Node destNode = Find(dest);
+
+            if (sourceNode == null || destNode == null)
+            {
+                return false;
+            }
+
+            return updateConnection(sourceNode, destNode, cost); 
+        }
+
+        public Node getRoot()
+        {
+            return nodes[0];
         }
     }
 }
