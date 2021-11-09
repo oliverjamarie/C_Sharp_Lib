@@ -90,7 +90,7 @@ namespace Library.Algorithms
                 index = 0;
                 foundIndex = 0;
                 randNum = rnd.NextDouble();
-                sortedConnections = curr.getConnectionsSorted();
+                sortedConnections = curr.getEdgesSorted();
 
                 foreach (Graph<T>.Edge edge in sortedConnections)
                 {
@@ -108,7 +108,7 @@ namespace Library.Algorithms
                     index++;
                 }
 
-                sortedConnections = curr.getConnectionsSorted();
+                sortedConnections = curr.getEdgesSorted();
 
                 double cost;
 
@@ -125,7 +125,7 @@ namespace Library.Algorithms
                         cost *= costModifier;
                     }
 
-                    curr.updateConnection(sortedConnections[j].getDestNode(), cost);
+                    curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
                 }
             }
 

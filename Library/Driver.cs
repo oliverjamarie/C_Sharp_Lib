@@ -189,9 +189,9 @@ namespace Library
         private static void traversal(Graph<int> graph)
         {
             Console.WriteLine("BREADTH FIRST TRAVERSAL \n ------");
-            graph.dispGraphBFT();
+            graph.BFT();
             Console.WriteLine("DEPTH FIRST TRAVERSAL \n ------");
-            graph.dispGraphDFT();
+            graph.DFT();
         }
 
         private static void adjacenyList(Graph<int> graph)
@@ -213,7 +213,7 @@ namespace Library
         private static void weightedAdjacenyList(Graph<int> graph)
         {
             Console.WriteLine("WEIGHTED ADJACENCY LIST \n ------");
-            Dictionary<int, Dictionary<int, double>> dictionary = graph.getWeightedAdjacencyList();
+            Dictionary<int, Dictionary<int, double>> dictionary = graph.getAdjacencyList();
 
             foreach (KeyValuePair<int, Dictionary<int,double>> pair in dictionary)
             {
