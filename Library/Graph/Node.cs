@@ -10,7 +10,7 @@ namespace Library.Graph
             /// <summary>
             /// Node's connections
             /// </summary>
-            private List<Edge> connections;
+            private List<Edge> neighbors;
 
             /// <summary>
             /// Has the node been visited?
@@ -29,7 +29,7 @@ namespace Library.Graph
 
             public Node()
             {
-                connections = new List<Edge>();
+                neighbors = new List<Edge>();
                 allowSelfConnection = false;
                 visited = false;
                 id = countNodes++;
@@ -60,23 +60,23 @@ namespace Library.Graph
                 if (this.Equals(destNode) && !allowSelfConnection)
                     return false;
 
-                foreach (Edge e in connections)
+                foreach (Edge e in neighbors)
                 {
                     // checks if a connection to the target node already exists
                     if (e.getDestNode().Equals(this))
                         return false;
                 }
 
-                connections.Add(new Edge(destNode, cost));
+                neighbors.Add(new Edge(destNode, cost));
                 
                 return true;
             }
 
-            public Dictionary<T, double> getWeightedConnections()
+            public Dictionary<T, double> getWeightedNeighbors()
             {
                 Dictionary<T, double> dict = new Dictionary<T, double>();
                 
-                foreach(Edge edge in connections)
+                foreach(Edge edge in neighbors)
                 {
                     dict.Add(edge.getDestNode().data, edge.getCost());
                 }
@@ -88,10 +88,10 @@ namespace Library.Graph
             /// Get list of connected nodes
             /// </summary>
             /// <returns>list of connected nodes </returns>
-            public List<Node> getConnectedNodes()
+            public List<Node> getNeighbors()
             {
                 List<Node> nodes = new List<Node>();
-                foreach (Edge edge in connections)
+                foreach (Edge edge in neighbors)
                 {
                     nodes.Add(edge.getDestNode());
                 }
@@ -99,9 +99,9 @@ namespace Library.Graph
                 return nodes;
             }
 
-            public List<Node> getConnectedNodesSorted()
+            public List<Node> getSortedNeighbors()
             {
-                List<Node> unsorted = getConnectedNodes();
+                List<Node> unsorted = getNeighbors();
                 List<Node> sorted = new List<Node>();
                 T min = unsorted[0].data;
                 
@@ -128,10 +128,10 @@ namespace Library.Graph
             /// Gets a list of the datapoints connected to the node
             /// </summary>
             /// <returns>List<typeparamref name="T"/></returns>
-            public List<T> getConnectionsData()
+            public List<T> getNeighborsData()
             {
                 List<T> list = new List<T>();
-                List<Node> nodes = getConnectedNodes();
+                List<Node> nodes = getNeighbors();
 
                 foreach (Node node in nodes)
                 {
@@ -145,18 +145,18 @@ namespace Library.Graph
             /// Get the edges the node is connected to
             /// </summary>
             /// <returns>List of edges connected to node</returns>
-            public List<Edge> getConnections()
+            public List<Edge> getEdges()
             {
-                return connections;
+                return neighbors;
             }
 
             /// <summary>
             /// Creates a sorted <code>List<Edge></code> based off the connection's cost
             /// </summary>
             /// <returns></returns>
-            public List<Edge> getConnectionsSorted()
+            public List<Edge> getEdgesSorted()
             {
-                List<Edge> unsorted = new List<Edge>(connections);
+                List<Edge> unsorted = new List<Edge>(neighbors);
                 List<Edge> sorted = new List<Edge>();
                 int minIndex;
 
@@ -190,9 +190,9 @@ namespace Library.Graph
                 return id == other.id;
             }
             
-            public bool updateConnection(Node dest, double cost)
+            public bool updateCostToNeighbor(Node dest, double cost)
             {
-                foreach(Edge edge in connections)
+                foreach(Edge edge in neighbors)
                 {
                     if (edge.getDestNode().Equals(dest))
                     {
@@ -207,7 +207,7 @@ namespace Library.Graph
 
             private Node getConnectedNode(Node node)
             {
-                foreach (Edge edge in connections)
+                foreach (Edge edge in neighbors)
                 {
                     if (edge.getDestNode().Equals(node))
                     {
@@ -218,15 +218,16 @@ namespace Library.Graph
                 return null;
             }
 
-            public double distToNode(Node node)
+            public double getDistanceToNode(Node node)
             {
-                foreach(Edge edge in connections)
+                foreach(Edge edge in neighbors)
                 {
                     if (edge.getDestNode().Equals(node))
                     {
                         return edge.getCost();
                     }
                 }
+                
 
                 return double.MinValue;
             }

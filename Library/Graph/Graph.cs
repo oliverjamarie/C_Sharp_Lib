@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Priority_Queue;
 
 namespace Library.Graph
 {
     public partial class Graph<T> where T : IComparable
     {
 
-        List<Node> nodes;
+        protected List<Node> nodes;
         public bool allowSelfConnect { get; set; }
 
         public Graph()
@@ -232,11 +233,13 @@ namespace Library.Graph
 
 
         /// <summary>
-        /// Displays graph using Breadth First Traversal
+        /// Traverses through graph using Breadth First Traversal starting from
+        /// graph's root 
         /// </summary>
-        public void dispGraphBFT()
+        /// <returns>List<typeparamref name="T"/> in order of Breadth First Traversal</returns>
+        public List<T> BFT()
         {
-
+            List<T> list = new List<T>();
             resetVisitedNodes();
 
             Queue<Node> queue = new Queue<Node>();
@@ -248,13 +251,13 @@ namespace Library.Graph
                 Node node = queue.Dequeue();
 
                 if (node.visited == false)
-                    Console.Write($"{node.data}\t");
+                    list.Add(node.data);
 
-                List<Edge> connections = node.getConnections();
+                List<Edge> connections = node.getEdges();
 
-                if (node.getConnectedNodes().Count > 0)
+                if (node.getNeighbors().Count > 0)
                 {
-                    foreach (Edge edge in node.getConnections())
+                    foreach (Edge edge in node.getEdges())
                     {
                         if (node.visited == false)
                             queue.Enqueue(edge.getDestNode());
@@ -263,37 +266,57 @@ namespace Library.Graph
 
                 node.visited = true;
             }
-
-            Console.WriteLine("");
+            return list;
         }
 
         /// <summary>
-        /// Displays graph using Depth First Traversal
+        /// Traverses through graph using Depth First Traversal starting from
+        /// the graph's root
         /// </summary>
-        public void dispGraphDFT()
+        /// <returns></returns>
+        public List<T> DFT()
         {
+            List<T> list = new List<T>();
             resetVisitedNodes();
-            dispGraphDFT(nodes[0]);
-            Console.WriteLine("");
+            DFT(nodes[0], list);
+            return list;
         }
 
         /// <summary>
-        /// Displays graph using Depth First Traversal starting from <code>node</code>
+        /// Traverses through graph using Depth First Traversal starting from
+        /// the specified <paramref name="source"/> node
         /// </summary>
-        /// <param name="node">Root Node</param>
-        private void dispGraphDFT(Node node)
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public List<T> DFT(Node source)
         {
-            Console.Write($"{node.data}\t");
+            List<T> list = new List<T>();
+
+            if (getNodeIndex(source) == -1)
+                return null;
+
+            resetVisitedNodes();
+            DFT(source, list);
+            return list;
+        }
+
+        /// <summary>
+        /// Recursive helper methd for <see cref="DFT()"/>
+        /// </summary>
+        /// <param name="node">Current node</param>
+        /// <param name="list">Nodes already traversed</param>
+        private void DFT(Node node, List<T> list)
+        {
+            list.Add(node.data);
             node.visited = true;
 
-            foreach (Edge edge in node.getConnections())
+            foreach (Edge edge in node.getEdges())
             {
                 Node n = edge.getDestNode();
 
                 if (n.visited == false)
                 {
-                    dispGraphDFT(n);
-                    
+                    DFT(n, list);            
                 }
 
                 n.visited = true;
@@ -314,14 +337,14 @@ namespace Library.Graph
         /// <summary>
         /// Generates unweighted adjacency matirx.
         /// </summary>
-        /// <returns>A square matrix of size <code>nodes.Count</code> of 1s (connection exists) and 0s (connection does not exist).</returns>
+        /// <returns> Graph's adjacency matrix where: 1 (connection exists) and 0 (connection does not exist).</returns>
         public int[,] getAdjacencyMatrix()
         {
             int[,] matrix = new int[nodes.Count, nodes.Count];
 
             for (int row = 0; row < nodes.Count; row++)
             {
-                List<Node> neighbors = nodes[row].getConnectedNodes();
+                List<Node> neighbors = nodes[row].getNeighbors();
 
                 for (int col = 0; col < nodes.Count; col++)
                 {
@@ -335,18 +358,22 @@ namespace Library.Graph
             return matrix;
         }
 
+        /// <summary>
+        /// Generates weighted adjacency matrix 
+        /// </summary>
+        /// <returns></returns>
         public double [,] getWeightedAdjacencyMatrix()
         {
             double[,] matrix = new double[nodes.Count, nodes.Count];
 
             for (int row = 0; row < nodes.Count; row++)
             {
-                List<Node> neighbors = nodes[row].getConnectedNodes();
+                List<Node> neighbors = nodes[row].getNeighbors();
 
                 for (int col = 0; col < nodes.Count; col++)
                 {
                     if (neighbors.Contains(nodes[col]))
-                        matrix[row, col] = nodes[row].distToNode(nodes[col]);
+                        matrix[row, col] = nodes[row].getDistanceToNode(nodes[col]);
                     else
                         matrix[row, col] = 0;
                 }
@@ -356,25 +383,29 @@ namespace Library.Graph
         }
         
         /// <summary>
-        /// Generates adjacency list
+        /// Generates unweighted adjacency list
         /// </summary>
         /// <returns>Adjacency list as a Dictionary</returns>
         public Dictionary<T, List<T>> getAdjacencyList(){
             Dictionary<T, List<T>> dict = new Dictionary<T, List<T>>();
 
             foreach(Node node in nodes){
-                dict.Add(node.data, node.getConnectionsData());
+                dict.Add(node.data, node.getNeighborsData());
             }
 
             return dict;
         }
 
+        /// <summary>
+        /// Generates weighted adjacency list
+        /// </summary>
+        /// <returns>Adjacency list as Dictionary with the cost to travel to each Node</returns>
         public Dictionary<T, Dictionary<T, double>> getWeightedAdjacencyList()
         {
             Dictionary<T, Dictionary<T, double>> dict = new Dictionary<T, Dictionary<T, double>>();
             foreach(Node node in nodes)
             {
-                dict.Add(node.data, node.getWeightedConnections());
+                dict.Add(node.data, node.getWeightedNeighbors());
             }
             return dict;
         }
@@ -390,7 +421,7 @@ namespace Library.Graph
 
         private bool updateConnection(Node source, Node dest, double cost)
         {
-            return source.updateConnection(dest, cost);
+            return source.updateCostToNeighbor(dest, cost);
         }
 
         public bool updateConnection(T source, T dest, double cost)
@@ -433,7 +464,7 @@ namespace Library.Graph
         /// <param name="node"></param>
         /// <returns>-1 if not in nodes.
         /// Index of <paramref name="node"/> in nodes</returns>
-        private int index(Node node)
+        private int getNodeIndex(Node node)
         {
             int index = 0;
 
@@ -444,10 +475,110 @@ namespace Library.Graph
                     return index;
                 }
 
+                
                 index++;
             }
 
             return -1;
         }
+
+        public double[] dijkstra(Node source)
+        {
+            double[] distances = new double[nodes.Count];
+            double[,] graph;
+            int index = getNodeIndex(source);
+
+            if (index == -1)
+            {
+                return null;
+            }
+
+            for(int i = 0; i < nodes.Count; i++)
+            {
+                distances[i] = double.MaxValue;
+            }
+
+            graph = getWeightedAdjacencyMatrix();
+
+            distances[index] = 0;
+
+            resetVisitedNodes();
+
+            source.visited = true;
+
+            foreach(Node curr in nodes)
+            {
+                if (curr != source)
+                {
+                    int currNodeindex = minDistance(distances);
+
+                    nodes[currNodeindex].visited = true;
+
+                    for (int otherNodeIndex = 0; otherNodeIndex < nodes.Count; otherNodeIndex++)
+                    {
+                        if (updateDikstra(currNodeindex, otherNodeIndex, distances))
+                        {
+                            distances[otherNodeIndex] = distances[currNodeindex] + graph[index, otherNodeIndex];
+                        }
+                                
+                    }
+                }
+            }
+
+            return distances;
+        }
+
+        /// <summary>
+        /// Helper method for Dijkstra to see if <paramref name="distances"/>[<paramref name="currNodeIndex"/>] needs to be updated
+        /// </summary>
+        /// <param name="currNodeIndex">Node Dijkstra is currently evalauating</param>
+        /// <param name="targetNodeIndex">Node which <paramref name="currNodeIndex"/> is currently evaluating against</param>
+        /// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+        /// <returns></returns>
+        private bool updateDikstra(int currNodeIndex, int targetNodeIndex, double[] distances)
+        {
+            double[,] graph = getWeightedAdjacencyMatrix();
+
+            if (nodes[currNodeIndex].visited)
+                return false;
+            if (graph[currNodeIndex, targetNodeIndex] == 0)
+                return false;
+            if (distances[currNodeIndex] == double.MaxValue)
+                return false;
+            if (distances[currNodeIndex] > distances[currNodeIndex] + graph[currNodeIndex, targetNodeIndex])
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method for Dijkstra. Finds the smallest distance from <paramref name="distances"/>
+        /// whose Node has not yet been visited
+        /// </summary>
+        /// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+        /// <returns>Returns index of Node Dijkstra needs to evaluate against</returns>
+        private int minDistance(double[] distances)
+        {
+            int index = 0, minIndex = -1 ;
+            double min = double.MinValue;
+
+            foreach (Node node in nodes)
+            {
+                if (node.visited == false)
+                {
+                    if (distances[index] <= min)
+                    {
+                        min = distances[index];
+                        minIndex = index;
+                    }
+                }
+
+                index++;
+            }
+
+            return minIndex;
+        }
+
+        
     }
 }
