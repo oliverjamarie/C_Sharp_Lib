@@ -213,7 +213,7 @@ namespace Library
         private static void weightedAdjacenyList(Graph<int> graph)
         {
             Console.WriteLine("WEIGHTED ADJACENCY LIST \n ------");
-            Dictionary<int, Dictionary<int, double>> dictionary = graph.getAdjacencyList();
+            Dictionary<int, Dictionary<int, double>> dictionary = graph.getWeightedAdjacencyList();
 
             foreach (KeyValuePair<int, Dictionary<int,double>> pair in dictionary)
             {
