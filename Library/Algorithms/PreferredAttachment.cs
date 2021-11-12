@@ -8,7 +8,7 @@ using Library.Graph;
 
 namespace Library.Algorithms
 {
-    class PreferredAttachment <T> where T : IComparable
+    public class PreferredAttachment <T> where T : IComparable
     {
         public Graph<T> graph;
         
