@@ -205,6 +205,23 @@ namespace Library.Graph
                 return false;
             }
 
+            public bool incrementCostToNeighbor(Node dest, double pct)
+            {
+                foreach (Edge edge in neighbors)
+                {
+                    if (edge.getDestNode().Equals(dest))
+                    {
+                        double cost = edge.getCost();
+
+                        edge.setCost(cost * pct);
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             private Node getConnectedNode(Node node)
             {
                 foreach (Edge edge in neighbors)
