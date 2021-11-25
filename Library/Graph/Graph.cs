@@ -30,7 +30,7 @@ namespace Library.Graph
             {
                 insert(i);
             }
-           
+
         }
 
         public Graph(Graph<T> graph):this(graph.getWeightedAdjacencyList())
@@ -97,7 +97,7 @@ namespace Library.Graph
             }
         }
 
-        /// <summary> 
+        /// <summary>
         /// Checks if a node exists in  <code>nodes</code> based on the data a node containts.
         /// Dependent on <code>Find(T)</code> method
         /// </summary>
@@ -113,7 +113,7 @@ namespace Library.Graph
                 }
             }
 
-            return false; 
+            return false;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Library.Graph
         /// </summary>
         /// <param name="data"></param>
         /// <returns>A Node from <code>nodes</code> having <code>data</code> as <code>Node.data</code>. Returns NULL if not found</returns>
-        private Node Find(T data)
+        public Node Find(T data)
         {
             foreach (Node node in nodes)
             {
@@ -135,7 +135,7 @@ namespace Library.Graph
         }
 
         /// <summary>
-        /// Inserts node  in <code>nodes</code> 
+        /// Inserts node  in <code>nodes</code>
         /// </summary>
         /// <param name="n">Node n</param>
         /// <returns>TRUE if <code>nodes</code> does not contain <code>n</code>, FALSE otherwise</returns>
@@ -145,7 +145,7 @@ namespace Library.Graph
                 return false;
 
             nodes.Add(n);
-            
+
             return true;
         }
 
@@ -216,7 +216,7 @@ namespace Library.Graph
         }
 
         /// <summary>
-        /// Connects two Node objects 
+        /// Connects two Node objects
         /// </summary>
         /// <param name="start">Start Node</param>
         /// <param name="end">Target Node</param>
@@ -233,7 +233,7 @@ namespace Library.Graph
 
         /// <summary>
         /// Traverses through graph using Breadth First Traversal starting from
-        /// graph's root 
+        /// graph's root
         /// </summary>
         /// <returns>List<typeparamref name="T"/> in order of Breadth First Traversal</returns>
         public List<T> BFT()
@@ -315,7 +315,7 @@ namespace Library.Graph
 
                 if (n.visited == false)
                 {
-                    DFT(n, list);            
+                    DFT(n, list);
                 }
 
                 n.visited = true;
@@ -358,7 +358,7 @@ namespace Library.Graph
         }
 
         /// <summary>
-        /// Generates weighted adjacency matrix 
+        /// Generates weighted adjacency matrix
         /// </summary>
         /// <returns></returns>
         public double [,] getWeightedAdjacencyMatrix()
@@ -380,7 +380,7 @@ namespace Library.Graph
 
             return matrix;
         }
-        
+
         /// <summary>
         /// Generates unweighted adjacency list
         /// </summary>
@@ -433,7 +433,26 @@ namespace Library.Graph
                 return false;
             }
 
-            return updateConnection(sourceNode, destNode, cost); 
+            return updateConnection(sourceNode, destNode, cost);
+        }
+
+        
+        public bool incrementConnection(T source, T dest, double pct)
+        {
+            Node sourceNode = Find(source);
+            Node destNode = Find(dest);
+
+            if (sourceNode == null || destNode == null)
+            {
+                return false;
+            }
+
+            return incrementConnection(sourceNode, destNode, pct);
+        }
+
+        private bool incrementConnection(Node source, Node dest, double pct)
+        {
+            return source.incrementCostToNeighbor(dest, pct);
         }
 
         public Node getRoot()
@@ -474,7 +493,7 @@ namespace Library.Graph
                     return index;
                 }
 
-                
+
                 index++;
             }
 
@@ -519,7 +538,7 @@ namespace Library.Graph
                         {
                             distances[otherNodeIndex] = distances[currNodeindex] + graph[index, otherNodeIndex];
                         }
-                                
+
                     }
                 }
             }
@@ -578,6 +597,6 @@ namespace Library.Graph
             return minIndex;
         }
 
-        
+
     }
 }
