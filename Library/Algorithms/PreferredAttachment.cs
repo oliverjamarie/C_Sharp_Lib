@@ -11,7 +11,8 @@ namespace Library.Algorithms
     public class PreferredAttachment <T> where T : IComparable
     {
         public Graph<T> graph;
-        
+        public Graph<T>.Node curr;
+
         double costModifier; 
 
         public PreferredAttachment()
@@ -49,6 +50,7 @@ namespace Library.Algorithms
         {
             graph.allowSelfConnect = true;
             costModifier = 0.05;
+            curr = graph.getRoot();
         }
 
         public bool setCostModifier(double modifier)
@@ -71,66 +73,65 @@ namespace Library.Algorithms
         public Queue<T> genQueue(int len)
         {
             Queue<T> queue = new Queue<T>();
-            Graph<T> copyGraph = new Graph<T>(graph);
-            Graph<T>.Node curr = copyGraph.getRoot();
-            List<Graph<T>.Edge> sortedConnections;
 
-            // Need to specify System.Random as it the library is meant for Unity
-            // and they have their own Random class
-
-            System.Random rnd = new System.Random();
-            double randNum;
-            int index, foundIndex;
-
-            if (curr == null)
-                return queue;
-
-            while (queue.Count < len)
+            for (int i = 0; i < len; i++)
             {
-                index = 0;
-                foundIndex = 0;
-                randNum = rnd.NextDouble();
-                sortedConnections = curr.getEdgesSorted();
-
-                foreach (Graph<T>.Edge edge in sortedConnections)
-                {
-                    if (randNum <= edge.getCost())
-                    {
-                        curr = edge.getDestNode();
-                        queue.Enqueue(curr.data);
-                        foundIndex = index;
-                        break;
-                    }
-                    else
-                    {
-                        randNum -= edge.getCost();
-                    }
-                    index++;
-                }
-
-                sortedConnections = curr.getEdgesSorted();
-
-                double cost;
-
-                for(int j = 0; j < sortedConnections.Count; j++)
-                {
-                    cost = sortedConnections[j].getCost();
-
-                    if (j == foundIndex)
-                    {
-                        cost /= costModifier;
-                    }
-                    else
-                    {
-                        cost *= costModifier;
-                    }
-
-                    curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
-                }
+                queue.Enqueue(getNext());
             }
 
             return queue;
             
+        }
+
+        public T getNext()
+        {
+            // Need to specify System.Random as it the library is meant for Unity
+            // and they have their own Random class
+            System.Random random = new Random();
+            double randNum = random.NextDouble(), cumulCost = 0, cost;
+            List<Graph<T>.Edge> sortedConnections;
+            int index = 0, foundIndex = 0;
+
+            if (curr == null)
+                return default; // discouraged for IComparable variables to be null
+
+            sortedConnections = curr.getEdgesSorted();
+
+            foreach(Graph<T>.Edge edge in sortedConnections)
+            {
+                if (randNum <= cumulCost)
+                {
+                    curr = edge.getDestNode();
+                    foundIndex = index;
+                    break;
+                }
+                else
+                {
+                    cumulCost += edge.getCost();
+                }
+
+                index++;
+            }
+
+            sortedConnections = curr.getEdgesSorted();
+
+            for (int j = 0; j < sortedConnections.Count; j++)
+            {
+                cost = sortedConnections[j].getCost();
+
+                if (j == foundIndex)
+                {
+                    cost /= costModifier;
+                }
+                else
+                {
+                    cost *= costModifier;
+                }
+
+                curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
+            }
+
+            return curr.data;
         }
     }
 }
