@@ -99,7 +99,7 @@ namespace Library.Algorithms
 
             foreach(Graph<T>.Edge edge in sortedConnections)
             {
-                if (randNum <= cumulCost)
+                if (randNum <= edge.getCost())
                 {
                     curr = edge.getDestNode();
                     foundIndex = index;
@@ -107,7 +107,7 @@ namespace Library.Algorithms
                 }
                 else
                 {
-                    cumulCost += edge.getCost();
+                   randNum -= edge.getCost();
                 }
 
                 index++;
