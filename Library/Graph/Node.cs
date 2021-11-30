@@ -1,48 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Library.Graph
+namespace C_Sharp_Lib.Library.Graph
 {
+    
     partial class Graph<T>
     {
-        public class Node
+        protected class Node : INode<T>
         {
             /// <summary>
             /// Node's connections
             /// </summary>
-            private List<Edge> neighbors;
+            private List<IEdge<T>> neighbors;
 
             /// <summary>
             /// Has the node been visited?
             /// </summary>
-            public bool visited;
+            private bool visited;
 
             /// <summary>
             /// Can a node connect to itself?
             /// </summary>
             private bool allowSelfConnection;
 
-            public T data{ get; set; }
+            private T data;
 
-            public static int countNodes = 0;
-            public int id;
+            protected static int countNodes = 0;
+            protected int id;
 
             public Node()
             {
-                neighbors = new List<Edge>();
+                neighbors = new List<IEdge<T>>();
                 allowSelfConnection = false;
                 visited = false;
                 id = countNodes++;
             }
 
-            public Node(T t):this()
+            public Node(T t) : this()
             {
                 this.data = t;
             }
 
-            public Node(T t, bool allowSelfConnection):this(t)
+            public Node(T t, bool allowSelfConnection) : this(t)
             {
                 this.allowSelfConnection = allowSelfConnection;
+            }
+
+            public int getID()
+            {
+                return id;
+            }
+
+            public static int getNumNodes()
+            {
+                return countNodes;
             }
 
             /// <summary>
@@ -55,7 +66,7 @@ namespace Library.Graph
             /// FALSE if a connection to <paramref name="destNode"/> already exists
             /// TRUE otherwise
             /// </returns>
-            public bool connectNode(Node destNode, double cost)
+            public bool connectNode(INode<T> destNode, double cost)
             {
                 if (this.Equals(destNode) && !allowSelfConnection)
                     return false;
@@ -68,17 +79,17 @@ namespace Library.Graph
                 }
 
                 neighbors.Add(new Edge(destNode, cost));
-                
+
                 return true;
             }
 
             public Dictionary<T, double> getWeightedNeighbors()
             {
                 Dictionary<T, double> dict = new Dictionary<T, double>();
-                
-                foreach(Edge edge in neighbors)
+
+                foreach (Edge edge in neighbors)
                 {
-                    dict.Add(edge.getDestNode().data, edge.getCost());
+                    dict.Add(edge.getDestNode().getData(), edge.getCost());
                 }
 
                 return dict;
@@ -88,9 +99,9 @@ namespace Library.Graph
             /// Get list of connected nodes
             /// </summary>
             /// <returns>list of connected nodes </returns>
-            public List<Node> getNeighbors()
+            public List<INode<T>> getNeighbors()
             {
-                List<Node> nodes = new List<Node>();
+                List<INode<T>> nodes = new List<INode<T>>();
                 foreach (Edge edge in neighbors)
                 {
                     nodes.Add(edge.getDestNode());
@@ -99,22 +110,22 @@ namespace Library.Graph
                 return nodes;
             }
 
-            public List<Node> getSortedNeighbors()
+            public List<INode<T>> getSortedNeighbors()
             {
-                List<Node> unsorted = getNeighbors();
-                List<Node> sorted = new List<Node>();
-                T min = unsorted[0].data;
-                
-                while(unsorted.Count > 0)
+                List<INode<T>> unsorted = getNeighbors();
+                List<INode<T>> sorted = new List<INode<T>>();
+                T min = unsorted[0].getData();
+
+                while (unsorted.Count > 0)
                 {
                     int minIndex = 0;
 
                     for (int i = 0; i < unsorted.Count; i++)
                     {
-                        if (unsorted[i].data.CompareTo(min) <= 0)
+                        if (unsorted[i].getData().CompareTo(min) <= 0)
                         {
                             minIndex = i;
-                            min = unsorted[i].data;
+                            min = unsorted[i].getData();
                         }
                     }
                     sorted.Add(unsorted[minIndex]);
@@ -131,7 +142,7 @@ namespace Library.Graph
             public List<T> getNeighborsData()
             {
                 List<T> list = new List<T>();
-                List<Node> nodes = getNeighbors();
+                List<INode<T>> nodes = getNeighbors();
 
                 foreach (Node node in nodes)
                 {
@@ -145,7 +156,7 @@ namespace Library.Graph
             /// Get the edges the node is connected to
             /// </summary>
             /// <returns>List of edges connected to node</returns>
-            public List<Edge> getEdges()
+            public List<IEdge<T>> getEdges()
             {
                 return neighbors;
             }
@@ -154,16 +165,16 @@ namespace Library.Graph
             /// Creates a sorted <code>List<Edge></code> based off the connection's cost
             /// </summary>
             /// <returns></returns>
-            public List<Edge> getEdgesSorted()
+            public List<IEdge<T>> getEdgesSorted()
             {
-                List<Edge> unsorted = new List<Edge>(neighbors);
-                List<Edge> sorted = new List<Edge>();
+                List<IEdge<T>> unsorted = new List<IEdge<T>>(neighbors);
+                List<IEdge<T>> sorted = new List<IEdge<T>>();
                 int minIndex;
 
                 while (unsorted.Count > 0)
                 {
                     minIndex = 0;
-                    Edge min = unsorted[minIndex];
+                    IEdge<T> min = unsorted[minIndex];
 
                     for (int i = 0; i < unsorted.Count; i++)
                     {
@@ -185,14 +196,14 @@ namespace Library.Graph
             /// </summary>
             /// <param name="other">Node to compare to</param>
             /// <returns>TRUE if equal.  FALSE otherwise</returns>
-            public bool Equals(Node other)
+            protected bool Equals(Node other)
             {
                 return id == other.id;
             }
-            
-            public bool updateCostToNeighbor(Node dest, double cost)
+
+            public bool updateCostToNeighbor(INode<T> dest, double cost)
             {
-                foreach(Edge edge in neighbors)
+                foreach (Edge edge in neighbors)
                 {
                     if (edge.getDestNode().Equals(dest))
                     {
@@ -205,7 +216,7 @@ namespace Library.Graph
                 return false;
             }
 
-            public bool incrementCostToNeighbor(Node dest, double pct)
+            public bool incrementCostToNeighbor(INode<T> dest, double pct)
             {
                 foreach (Edge edge in neighbors)
                 {
@@ -222,7 +233,7 @@ namespace Library.Graph
                 return false;
             }
 
-            private Node getConnectedNode(Node node)
+            public INode<T> getConnectedNode(INode<T> node)
             {
                 foreach (Edge edge in neighbors)
                 {
@@ -235,19 +246,35 @@ namespace Library.Graph
                 return null;
             }
 
-            public double getDistanceToNode(Node node)
+            public double getDistanceToNode(INode<T> node)
             {
-                foreach(Edge edge in neighbors)
+                foreach (Edge edge in neighbors)
                 {
                     if (edge.getDestNode().Equals(node))
                     {
                         return edge.getCost();
                     }
                 }
-                
+
 
                 return double.MinValue;
             }
+
+            public T getData()
+            {
+                return data;
+            }
+
+            public bool isVisited()
+            {
+                return visited;
+            }
+
+            public void setVisited(bool input)
+            {
+                visited = input;
+            }
         }
+
     }
 }

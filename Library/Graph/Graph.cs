@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Library.Graph
+namespace C_Sharp_Lib.Library.Graph
 {
     public partial class Graph<T> where T : IComparable
     {
@@ -107,7 +107,7 @@ namespace Library.Graph
         {
             foreach(Node node in nodes)
             {
-                if (node.data.Equals(nodeData))
+                if (node.getData().Equals(nodeData))
                 {
                     return true;
                 }
@@ -121,11 +121,11 @@ namespace Library.Graph
         /// </summary>
         /// <param name="data"></param>
         /// <returns>A Node from <code>nodes</code> having <code>data</code> as <code>Node.data</code>. Returns NULL if not found</returns>
-        public Node Find(T data)
+        protected Node Find(T data)
         {
             foreach (Node node in nodes)
             {
-                if (node.data.Equals(data))
+                if (node.getData().Equals(data))
                 {
                     return node;
                 }
@@ -241,29 +241,29 @@ namespace Library.Graph
             List<T> list = new List<T>();
             resetVisitedNodes();
 
-            Queue<Node> queue = new Queue<Node>();
+            Queue<INode<T>> queue = new Queue<INode<T>>();
 
             queue.Enqueue(nodes[0]);
 
             while(queue.Count > 0)
             {
-                Node node = queue.Dequeue();
+                INode<T> node = queue.Dequeue();
 
-                if (node.visited == false)
-                    list.Add(node.data);
+                if (node.isVisited() == false)
+                    list.Add(node.getData());
 
-                List<Edge> connections = node.getEdges();
+                List<IEdge<T>> connections = node.getEdges();
 
                 if (node.getNeighbors().Count > 0)
                 {
-                    foreach (Edge edge in node.getEdges())
+                    foreach (IEdge<T> edge in node.getEdges())
                     {
-                        if (node.visited == false)
+                        if (node.isVisited() == false)
                             queue.Enqueue(edge.getDestNode());
                     }
                 }
 
-                node.visited = true;
+                node.setVisited(false);
             }
             return list;
         }
@@ -287,7 +287,7 @@ namespace Library.Graph
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public List<T> DFT(Node source)
+        protected List<T> DFT(Node source)
         {
             List<T> list = new List<T>();
 
@@ -299,26 +299,31 @@ namespace Library.Graph
             return list;
         }
 
+        public List<T> DFT(T data)
+        {
+            return DFT(Find(data));
+        }
+
         /// <summary>
         /// Recursive helper methd for <see cref="DFT()"/>
         /// </summary>
         /// <param name="node">Current node</param>
         /// <param name="list">Nodes already traversed</param>
-        private void DFT(Node node, List<T> list)
+        private void DFT(INode<T> node, List<T> list)
         {
-            list.Add(node.data);
-            node.visited = true;
+            list.Add(node.getData());
+            node.setVisited(true);
 
             foreach (Edge edge in node.getEdges())
             {
-                Node n = edge.getDestNode();
+                INode<T> n = edge.getDestNode();
 
-                if (n.visited == false)
+                if (n.isVisited() == false)
                 {
                     DFT(n, list);
                 }
 
-                n.visited = true;
+                n.setVisited(false);
             }
         }
 
@@ -327,9 +332,9 @@ namespace Library.Graph
         /// </summary>
         public void resetVisitedNodes()
         {
-            foreach (Node node in nodes)
+            foreach (INode<T> node in nodes)
             {
-                node.visited = false;
+                node.setVisited(false);
             }
         }
 
@@ -343,7 +348,7 @@ namespace Library.Graph
 
             for (int row = 0; row < nodes.Count; row++)
             {
-                List<Node> neighbors = nodes[row].getNeighbors();
+                List<INode<T>> neighbors = nodes[row].getNeighbors();
 
                 for (int col = 0; col < nodes.Count; col++)
                 {
@@ -367,7 +372,7 @@ namespace Library.Graph
 
             for (int row = 0; row < nodes.Count; row++)
             {
-                List<Node> neighbors = nodes[row].getNeighbors();
+                List<INode<T>> neighbors = nodes[row].getNeighbors();
 
                 for (int col = 0; col < nodes.Count; col++)
                 {
@@ -389,7 +394,7 @@ namespace Library.Graph
             Dictionary<T, List<T>> dict = new Dictionary<T, List<T>>();
 
             foreach(Node node in nodes){
-                dict.Add(node.data, node.getNeighborsData());
+                dict.Add(node.getData(), node.getNeighborsData());
             }
 
             return dict;
@@ -404,7 +409,7 @@ namespace Library.Graph
             Dictionary<T, Dictionary<T, double>> dict = new Dictionary<T, Dictionary<T, double>>();
             foreach(Node node in nodes)
             {
-                dict.Add(node.data, node.getWeightedNeighbors());
+                dict.Add(node.getData(), node.getWeightedNeighbors());
             }
             return dict;
         }
@@ -455,7 +460,7 @@ namespace Library.Graph
             return source.incrementCostToNeighbor(dest, pct);
         }
 
-        public Node getRoot()
+        public INode<T> getRoot()
         {
             return nodes[0];
         }
@@ -470,7 +475,7 @@ namespace Library.Graph
 
             foreach(Node node in nodes)
             {
-                list.Add(node.data);
+                list.Add(node.getData());
             }
 
             return list;
@@ -500,7 +505,7 @@ namespace Library.Graph
             return -1;
         }
 
-        public double[] dijkstra(Node source)
+        protected double[] dijkstra(Node source)
         {
             double[] distances = new double[nodes.Count];
             double[,] graph;
@@ -522,15 +527,15 @@ namespace Library.Graph
 
             resetVisitedNodes();
 
-            source.visited = true;
+            source.setVisited(true);
 
-            foreach(Node curr in nodes)
+            foreach (Node curr in nodes)
             {
                 if (curr != source)
                 {
                     int currNodeindex = minDistance(distances);
 
-                    nodes[currNodeindex].visited = true;
+                    nodes[currNodeindex].setVisited(true);
 
                     for (int otherNodeIndex = 0; otherNodeIndex < nodes.Count; otherNodeIndex++)
                     {
@@ -557,7 +562,7 @@ namespace Library.Graph
         {
             double[,] graph = getWeightedAdjacencyMatrix();
 
-            if (nodes[currNodeIndex].visited)
+            if (nodes[currNodeIndex].isVisited())
                 return false;
             if (graph[currNodeIndex, targetNodeIndex] == 0)
                 return false;
@@ -582,7 +587,7 @@ namespace Library.Graph
 
             foreach (Node node in nodes)
             {
-                if (node.visited == false)
+                if (node.isVisited() == false)
                 {
                     if (distances[index] <= min)
                     {
