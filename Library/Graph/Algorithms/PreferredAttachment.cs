@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Library.Graph;
+using C_Sharp_Lib.Library.Graph;
 
 
-namespace Library.Algorithms
+namespace C_Sharp_Lib.Library.GraphLibrary.Graph.Algorithms
 {
     public class PreferredAttachment <T> where T : IComparable
     {
         public Graph<T> graph;
-        public Graph<T>.Node curr;
+        public INode<T> curr;
 
         double costModifier; 
 
@@ -89,7 +89,7 @@ namespace Library.Algorithms
             // and they have their own Random class
             System.Random random = new Random();
             double randNum = random.NextDouble(), cumulCost = 0, cost;
-            List<Graph<T>.Edge> sortedConnections;
+            List<IEdge<T>> sortedConnections;
             int index = 0, foundIndex = 0;
 
             if (curr == null)
@@ -97,7 +97,7 @@ namespace Library.Algorithms
 
             sortedConnections = curr.getEdgesSorted();
 
-            foreach(Graph<T>.Edge edge in sortedConnections)
+            foreach(IEdge<T> edge in sortedConnections)
             {
                 if (randNum <= cumulCost)
                 {
@@ -131,7 +131,7 @@ namespace Library.Algorithms
                 curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
             }
 
-            return curr.data;
+            return curr.getData();
         }
     }
 }
