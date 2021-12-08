@@ -1,28 +1,269 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Library</name>
+        <name>C_Sharp_Lib</name>
     </assembly>
     <members>
-        <member name="M:Library.Graph.Graph`1.Edge.getDestNode">
+        <member name="M:C_Sharp_Lib.Library.Graph.Algorithms.PreferredAttachment`1.genQueue(System.Int32)">
+            <summary>
+            Generates a queue 
+            </summary>
+            <param name="len"></param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Edge.#ctor(C_Sharp_Lib.Library.Graph.INode{`0},System.Double)">
+            <summary>
+            Edge constructor
+            </summary>
+            <param name="targetNode">Edge's destination node</param>
+            <param name="cost">Cost to travel through the edge to the destination node</param>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Edge.getDestNode">
             <summary>
             Returns the edge's destination node
             </summary>
             <returns>
-            Node
+            Destination node
             </returns>
         </member>
-        <member name="M:Library.Graph.Graph`1.Edge.getCost">
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Edge.getCost">
             <summary>
             Returns the cost to go the edge's destination node
             </summary>
-            <returns>cost</returns>
+            <returns>Cost to destination node</returns>
         </member>
-        <member name="M:Library.Graph.Graph`1.#ctor(System.Collections.Generic.Dictionary{`0,System.Collections.Generic.List{`0}})">
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.#ctor(System.Collections.Generic.Dictionary{`0,System.Collections.Generic.List{`0}})">
             <summary>
             Constructor using an adjacency list
             </summary>
-            <param name="adjList"></param>
+            <param name="adjList"> Key: source node; Value: list of destination nodes </param>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.#ctor(System.Collections.Generic.Dictionary{`0,System.Collections.Generic.Dictionary{`0,System.Double}})">
+            <summary>
+            Constructor using an adjacency list (includes weights to destination nodes)
+            </summary>
+            <param name="adjList">
+            <list type="table">
+                <item><term>Key</term><description>Source node</description></item>
+                <item><term>Value</term><description>Dictionary containing the target nodes and the weight of their edges</description></item>
+            </list>
+            </param>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.existsInGraph(`0)">
+            <summary>
+            Checks if a node exists in  <code>nodes</code> based on the data a node containts.
+            Dependent on <code>Find(T)</code> method
+            </summary>
+            <param name="nodeData">Node you're looking for </param>
+            <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Find(`0)">
+            <summary>
+            Finds node having <code>data</code> as <code>Node.data</code>
+            </summary>
+            <param name="data"></param>
+            <returns>A Node from <code>nodes</code> having <code>data</code> as <code>Node.data</code>. Returns NULL if not found</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.insertNode(C_Sharp_Lib.Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Inserts node  in <code>nodes</code>
+            </summary>
+            <param name="n">Node n</param>
+            <returns>TRUE if <code>nodes</code> does not contain <code>n</code>, FALSE otherwise</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.insert(`0)">
+            <summary>
+            Inserts new node into <code>nodes</code>.  Dependent on <code>Insert(Node)</code> method
+            </summary>
+            <param name="t">What to add to the list of <code>nodes</code></param>
+            <returns>Return value is <code>insert(Node)</code></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.connectNodes(`0,`0,System.Double)">
+            <summary>
+            Connects two nodes
+            </summary>
+            <param name="start"> Start Node </param>
+            <param name="dest"> Destination Node</param>
+            <param name="cost"> Cost to travel from <code>start</code> to <code>dest</code></param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.connectNodes(`0,System.Collections.Generic.Dictionary{`0,System.Double})">
+            <summary>
+            Connects <paramref name="start"/> to all nodes in <paramref name="targets"/> keeping track of their cost
+            </summary>
+            <param name="start">Start node</param>
+            <param name="targets">Dictionary of target nodes and their weights</param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.connectNodes(`0,System.Collections.Generic.List{`0})">
+            <summary>
+            Connects <paramref name="start"/> to all nodes in <paramref name="targets"/>
+            </summary>
+            <param name="start">Start Node</param>
+            <param name="targets">List of target nodes</param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.connectNodes(C_Sharp_Lib.Library.Graph.Graph{`0}.Node,C_Sharp_Lib.Library.Graph.Graph{`0}.Node,System.Double)">
+            <summary>
+            Connects two Node objects
+            </summary>
+            <param name="start">Start Node</param>
+            <param name="end">Target Node</param>
+            <param name="cost">Cost for <paramref name="start"/> to travel to <paramref name="end"/></param>
+            <returns>TRUE if <code>nodes</code>does not contain <paramref name="start"/> or <paramref name="end"/></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.BFT">
+            <summary>
+            Traverses through graph using Breadth First Traversal starting from
+            graph's root
+            </summary>
+            <returns>List<typeparamref name="T"/> in order of Breadth First Traversal</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.DFT">
+            <summary>
+            Traverses through graph using Depth First Traversal starting from
+            the graph's root
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.DFT(C_Sharp_Lib.Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Traverses through graph using Depth First Traversal starting from
+            the specified <paramref name="source"/> node
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.DFT(C_Sharp_Lib.Library.Graph.INode{`0},System.Collections.Generic.List{`0})">
+            <summary>
+            Recursive helper methd for <see cref="M:C_Sharp_Lib.Library.Graph.Graph`1.DFT"/>
+            </summary>
+            <param name="node">Current node</param>
+            <param name="list">Nodes already traversed</param>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.resetVisitedNodes">
+            <summary>
+            Resets all nodes in <code>nodes</code> list not visited
+            </summary>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getAdjacencyMatrix">
+            <summary>
+            Generates unweighted adjacency matirx.
+            </summary>
+            <returns> Graph's adjacency matrix where: 1 (connection exists) and 0 (connection does not exist).</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getWeightedAdjacencyMatrix">
+            <summary>
+            Generates weighted adjacency matrix
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getAdjacencyList">
+            <summary>
+            Generates unweighted adjacency list
+            </summary>
+            <returns>Adjacency list as a Dictionary</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getWeightedAdjacencyList">
+            <summary>
+            Generates weighted adjacency list
+            </summary>
+            <returns>Adjacency list as Dictionary with the cost to travel to each Node</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getSize">
+            <summary>
+            Gets the size of <code>nodes.Count</code>
+            </summary>
+            <returns>Number of nodes in graph</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getNodes">
+            <summary>
+            Goes through the graph's list of nodes and gets the data stored in every one
+            </summary>
+            <returns>Returns list of every piece of data in the graph</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.getNodeIndex(C_Sharp_Lib.Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Returns index of <paramref name="node"/> in nodes
+            </summary>
+            <param name="node"></param>
+            <returns>-1 if not in nodes.
+            Index of <paramref name="node"/> in nodes</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.updateDikstra(System.Int32,System.Int32,System.Double[])">
+            <summary>
+            Helper method for Dijkstra to see if <paramref name="distances"/>[<paramref name="currNodeIndex"/>] needs to be updated
+            </summary>
+            <param name="currNodeIndex">Node Dijkstra is currently evalauating</param>
+            <param name="targetNodeIndex">Node which <paramref name="currNodeIndex"/> is currently evaluating against</param>
+            <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.minDistance(System.Double[])">
+            <summary>
+            Helper method for Dijkstra. Finds the smallest distance from <paramref name="distances"/>
+            whose Node has not yet been visited
+            </summary>
+            <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+            <returns>Returns index of Node Dijkstra needs to evaluate against</returns>
+        </member>
+        <member name="F:C_Sharp_Lib.Library.Graph.Graph`1.Node.neighbors">
+            <summary>
+            Node's connections
+            </summary>
+        </member>
+        <member name="F:C_Sharp_Lib.Library.Graph.Graph`1.Node.visited">
+            <summary>
+            Has the node been visited?
+            </summary>
+        </member>
+        <member name="F:C_Sharp_Lib.Library.Graph.Graph`1.Node.allowSelfConnection">
+            <summary>
+            Can a node connect to itself?
+            </summary>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.connectNode(C_Sharp_Lib.Library.Graph.INode{`0},System.Double)">
+            <summary>
+            Connects two nodes
+            </summary>
+            <param name="destNode">Destination node</param>
+            <param name="cost">Cost to travel to node</param>
+            <returns>
+            FALSE if <code>allowSelfConnection</code> is FALSE and the node equals <paramref name="destNode"/>
+            FALSE if a connection to <paramref name="destNode"/> already exists
+            TRUE otherwise
+            </returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.getNeighbors">
+            <summary>
+            Get list of connected nodes
+            </summary>
+            <returns>list of connected nodes </returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.getNeighborsData">
+            <summary>
+            Gets a list of the datapoints connected to the node
+            </summary>
+            <returns>List<typeparamref name="T"/></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.getEdges">
+            <summary>
+            Get the edges the node is connected to
+            </summary>
+            <returns>List of edges connected to node</returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.getEdgesSorted">
+            <summary>
+            Creates a sorted <code>List</code> based off the connection's cost
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:C_Sharp_Lib.Library.Graph.Graph`1.Node.Equals(C_Sharp_Lib.Library.Graph.Graph{`0}.Node)">
+            <summary>
+            Compares this node with <paramref name="other"/> based on their IDs
+            </summary>
+            <param name="other">Node to compare to</param>
+            <returns>TRUE if equal.  FALSE otherwise</returns>
         </member>
     </members>
 </doc>
