@@ -28,11 +28,17 @@ namespace C_Sharp_Lib.Library.Graph
             protected static int countNodes = 0;
             protected int id;
 
+            public bool Visited { get => visited; set => visited = value; }
+            public bool AllowSelfConnection { get => allowSelfConnection; set => allowSelfConnection = value; }
+            public T Data { get => data;}
+            public int ID { get => id; }
+            public static int NumNodes { get => NumNodes; }
+
             public Node()
             {
                 neighbors = new List<IEdge<T>>();
-                allowSelfConnection = false;
-                visited = false;
+                AllowSelfConnection = false;
+                Visited = false;
                 id = countNodes++;
             }
 
@@ -43,7 +49,7 @@ namespace C_Sharp_Lib.Library.Graph
 
             public Node(T t, bool allowSelfConnection) : this(t)
             {
-                this.allowSelfConnection = allowSelfConnection;
+                this.AllowSelfConnection = allowSelfConnection;
             }
 
             public int getID()
@@ -62,13 +68,13 @@ namespace C_Sharp_Lib.Library.Graph
             /// <param name="destNode">Destination node</param>
             /// <param name="cost">Cost to travel to node</param>
             /// <returns>
-            /// FALSE if <code>allowSelfConnection</code> is FALSE && the node equals <paramref name="destNode"/>
+            /// FALSE if <code>allowSelfConnection</code> is FALSE and the node equals <paramref name="destNode"/>
             /// FALSE if a connection to <paramref name="destNode"/> already exists
             /// TRUE otherwise
             /// </returns>
             public bool connectNode(INode<T> destNode, double cost)
             {
-                if (this.Equals(destNode) && !allowSelfConnection)
+                if (this.Equals(destNode) && !AllowSelfConnection)
                     return false;
 
                 foreach (Edge e in neighbors)
@@ -89,7 +95,7 @@ namespace C_Sharp_Lib.Library.Graph
 
                 foreach (Edge edge in neighbors)
                 {
-                    dict.Add(edge.getDestNode().getData(), edge.getCost());
+                    dict.Add(edge.getDestNode().Data, edge.getCost());
                 }
 
                 return dict;
@@ -114,7 +120,7 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 List<INode<T>> unsorted = getNeighbors();
                 List<INode<T>> sorted = new List<INode<T>>();
-                T min = unsorted[0].getData();
+                T min = unsorted[0].Data;
 
                 while (unsorted.Count > 0)
                 {
@@ -122,10 +128,10 @@ namespace C_Sharp_Lib.Library.Graph
 
                     for (int i = 0; i < unsorted.Count; i++)
                     {
-                        if (unsorted[i].getData().CompareTo(min) <= 0)
+                        if (unsorted[i].Data.CompareTo(min) <= 0)
                         {
                             minIndex = i;
-                            min = unsorted[i].getData();
+                            min = unsorted[i].Data;
                         }
                     }
                     sorted.Add(unsorted[minIndex]);
@@ -146,7 +152,7 @@ namespace C_Sharp_Lib.Library.Graph
 
                 foreach (Node node in nodes)
                 {
-                    list.Add(node.data);
+                    list.Add(node.Data);
                 }
 
                 return list;
@@ -162,7 +168,7 @@ namespace C_Sharp_Lib.Library.Graph
             }
 
             /// <summary>
-            /// Creates a sorted <code>List<Edge></code> based off the connection's cost
+            /// Creates a sorted <code>List</code> based off the connection's cost
             /// </summary>
             /// <returns></returns>
             public List<IEdge<T>> getEdgesSorted()
@@ -262,17 +268,7 @@ namespace C_Sharp_Lib.Library.Graph
 
             public T getData()
             {
-                return data;
-            }
-
-            public bool isVisited()
-            {
-                return visited;
-            }
-
-            public void setVisited(bool input)
-            {
-                visited = input;
+                return Data;
             }
         }
 

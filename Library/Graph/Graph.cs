@@ -8,7 +8,13 @@ namespace C_Sharp_Lib.Library.Graph
     {
 
         protected List<Node> nodes;
-        public bool allowSelfConnect { get; set; }
+        private bool allowSelfConnect;
+
+        public bool AllowSelfConnect
+        {
+            get { return allowSelfConnect; }
+            set { allowSelfConnect = AllowSelfConnect; }
+        }
 
         public Graph()
         {
@@ -107,7 +113,7 @@ namespace C_Sharp_Lib.Library.Graph
         {
             foreach(Node node in nodes)
             {
-                if (node.getData().Equals(nodeData))
+                if (node.Data.Equals(nodeData))
                 {
                     return true;
                 }
@@ -125,7 +131,7 @@ namespace C_Sharp_Lib.Library.Graph
         {
             foreach (Node node in nodes)
             {
-                if (node.getData().Equals(data))
+                if (node.Data.Equals(data))
                 {
                     return node;
                 }
@@ -249,8 +255,8 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 INode<T> node = queue.Dequeue();
 
-                if (node.isVisited() == false)
-                    list.Add(node.getData());
+                if (node.Visited == false)
+                    list.Add(node.Data);
 
                 List<IEdge<T>> connections = node.getEdges();
 
@@ -258,12 +264,12 @@ namespace C_Sharp_Lib.Library.Graph
                 {
                     foreach (IEdge<T> edge in node.getEdges())
                     {
-                        if (node.isVisited() == false)
+                        if (node.Visited == false)
                             queue.Enqueue(edge.getDestNode());
                     }
                 }
 
-                node.setVisited(false);
+                node.Visited = false;
             }
             return list;
         }
@@ -311,19 +317,19 @@ namespace C_Sharp_Lib.Library.Graph
         /// <param name="list">Nodes already traversed</param>
         private void DFT(INode<T> node, List<T> list)
         {
-            list.Add(node.getData());
-            node.setVisited(true);
+            list.Add(node.Data);
+            node.Visited = true;
 
             foreach (Edge edge in node.getEdges())
             {
                 INode<T> n = edge.getDestNode();
 
-                if (n.isVisited() == false)
+                if (n.Visited == false)
                 {
                     DFT(n, list);
                 }
 
-                n.setVisited(false);
+                n.Visited = false;
             }
         }
 
@@ -334,7 +340,7 @@ namespace C_Sharp_Lib.Library.Graph
         {
             foreach (INode<T> node in nodes)
             {
-                node.setVisited(false);
+                node.Visited = false;
             }
         }
 
@@ -394,7 +400,7 @@ namespace C_Sharp_Lib.Library.Graph
             Dictionary<T, List<T>> dict = new Dictionary<T, List<T>>();
 
             foreach(Node node in nodes){
-                dict.Add(node.getData(), node.getNeighborsData());
+                dict.Add(node.Data, node.getNeighborsData());
             }
 
             return dict;
@@ -409,7 +415,7 @@ namespace C_Sharp_Lib.Library.Graph
             Dictionary<T, Dictionary<T, double>> dict = new Dictionary<T, Dictionary<T, double>>();
             foreach(Node node in nodes)
             {
-                dict.Add(node.getData(), node.getWeightedNeighbors());
+                dict.Add(node.Data, node.getWeightedNeighbors());
             }
             return dict;
         }
@@ -475,7 +481,7 @@ namespace C_Sharp_Lib.Library.Graph
 
             foreach(Node node in nodes)
             {
-                list.Add(node.getData());
+                list.Add(node.Data);
             }
 
             return list;
@@ -527,7 +533,7 @@ namespace C_Sharp_Lib.Library.Graph
 
             resetVisitedNodes();
 
-            source.setVisited(true);
+            source.Visited =true;
 
             foreach (Node curr in nodes)
             {
@@ -535,7 +541,7 @@ namespace C_Sharp_Lib.Library.Graph
                 {
                     int currNodeindex = minDistance(distances);
 
-                    nodes[currNodeindex].setVisited(true);
+                    nodes[currNodeindex].Visited = true;
 
                     for (int otherNodeIndex = 0; otherNodeIndex < nodes.Count; otherNodeIndex++)
                     {
@@ -562,7 +568,7 @@ namespace C_Sharp_Lib.Library.Graph
         {
             double[,] graph = getWeightedAdjacencyMatrix();
 
-            if (nodes[currNodeIndex].isVisited())
+            if (nodes[currNodeIndex].Visited)
                 return false;
             if (graph[currNodeIndex, targetNodeIndex] == 0)
                 return false;
@@ -587,7 +593,7 @@ namespace C_Sharp_Lib.Library.Graph
 
             foreach (Node node in nodes)
             {
-                if (node.isVisited() == false)
+                if (node.Visited == false)
                 {
                     if (distances[index] <= min)
                     {
