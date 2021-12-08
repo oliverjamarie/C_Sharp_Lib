@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using C_Sharp_Lib.Library.Graph;
 
 
-namespace C_Sharp_Lib.Library.GraphLibrary.Graph.Algorithms
+namespace C_Sharp_Lib.Library.Graph.Algorithms
 {
     public class PreferredAttachment <T> where T : IComparable
     {
@@ -48,7 +48,7 @@ namespace C_Sharp_Lib.Library.GraphLibrary.Graph.Algorithms
 
         private void init()
         {
-            graph.allowSelfConnect = true;
+            graph.AllowSelfConnect = true;
             costModifier = 0.05;
             curr = graph.getRoot();
         }
@@ -88,7 +88,7 @@ namespace C_Sharp_Lib.Library.GraphLibrary.Graph.Algorithms
             // Need to specify System.Random as it the library is meant for Unity
             // and they have their own Random class
             System.Random random = new Random();
-            double randNum = random.NextDouble(), cumulCost = 0, cost;
+            double randNum = random.NextDouble(), cost;
             List<IEdge<T>> sortedConnections;
             int index = 0, foundIndex = 0;
 
@@ -131,7 +131,7 @@ namespace C_Sharp_Lib.Library.GraphLibrary.Graph.Algorithms
                 curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
             }
 
-            return curr.getData();
+            return curr.Data;
         }
     }
 }
