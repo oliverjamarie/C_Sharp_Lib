@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace C_Sharp_Lib.Library.Graph
+namespace Library.Graph
 {
     
     partial class Graph<T>
@@ -32,7 +32,7 @@ namespace C_Sharp_Lib.Library.Graph
             public bool AllowSelfConnection { get => allowSelfConnection; set => allowSelfConnection = value; }
             public T Data { get => data;}
             public int ID { get => id; }
-            public static int NumNodes { get => NumNodes; }
+            public static int NumNodes { get => countNodes; }
 
             public Node()
             {
@@ -52,15 +52,6 @@ namespace C_Sharp_Lib.Library.Graph
                 this.AllowSelfConnection = allowSelfConnection;
             }
 
-            public int getID()
-            {
-                return id;
-            }
-
-            public static int getNumNodes()
-            {
-                return countNodes;
-            }
 
             /// <summary>
             /// Connects two nodes
@@ -80,22 +71,27 @@ namespace C_Sharp_Lib.Library.Graph
                 foreach (Edge e in neighbors)
                 {
                     // checks if a connection to the target node already exists
-                    if (e.getDestNode().Equals(this))
+                    if (e.DestNode.Equals(this))
                         return false;
                 }
 
-                neighbors.Add(new Edge(destNode, cost));
+                neighbors.Add(new Edge(destNode,this, cost));
 
                 return true;
             }
 
+            /// <summary>
+            /// Compiles a dictionary of the other nodes this node is connected to
+            /// and the cost to travel to them
+            /// </summary>
+            /// <returns></returns>
             public Dictionary<T, double> getWeightedNeighbors()
             {
                 Dictionary<T, double> dict = new Dictionary<T, double>();
 
                 foreach (Edge edge in neighbors)
                 {
-                    dict.Add(edge.getDestNode().Data, edge.getCost());
+                    dict.Add(edge.DestNode.Data, edge.Cost);
                 }
 
                 return dict;
@@ -110,7 +106,7 @@ namespace C_Sharp_Lib.Library.Graph
                 List<INode<T>> nodes = new List<INode<T>>();
                 foreach (Edge edge in neighbors)
                 {
-                    nodes.Add(edge.getDestNode());
+                    nodes.Add(edge.DestNode);
                 }
 
                 return nodes;
@@ -184,7 +180,7 @@ namespace C_Sharp_Lib.Library.Graph
 
                     for (int i = 0; i < unsorted.Count; i++)
                     {
-                        if (unsorted[i].getCost() < unsorted[minIndex].getCost())
+                        if (unsorted[i].Cost < unsorted[minIndex].Cost)
                         {
                             minIndex = i;
                             min = unsorted[i];
@@ -211,9 +207,9 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 foreach (Edge edge in neighbors)
                 {
-                    if (edge.getDestNode().Equals(dest))
+                    if (edge.DestNode.Equals(dest))
                     {
-                        edge.setCost(cost);
+                        edge.Cost = cost;
 
                         return true;
                     }
@@ -226,11 +222,11 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 foreach (Edge edge in neighbors)
                 {
-                    if (edge.getDestNode().Equals(dest))
+                    if (edge.DestNode.Equals(dest))
                     {
-                        double cost = edge.getCost();
+                        double cost = edge.Cost;
 
-                        edge.setCost(cost * pct);
+                        edge.Cost = cost * pct;
 
                         return true;
                     }
@@ -243,9 +239,9 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 foreach (Edge edge in neighbors)
                 {
-                    if (edge.getDestNode().Equals(node))
+                    if (edge.DestNode.Equals(node))
                     {
-                        return edge.getDestNode();
+                        return edge.DestNode;
                     }
                 }
 
@@ -256,9 +252,9 @@ namespace C_Sharp_Lib.Library.Graph
             {
                 foreach (Edge edge in neighbors)
                 {
-                    if (edge.getDestNode().Equals(node))
+                    if (edge.DestNode.Equals(node))
                     {
-                        return edge.getCost();
+                        return edge.Cost;
                     }
                 }
 
@@ -266,9 +262,12 @@ namespace C_Sharp_Lib.Library.Graph
                 return double.MinValue;
             }
 
-            public T getData()
+            public bool Equals(INode<T> other)
             {
-                return Data;
+                if (other == null)
+                    return false;
+
+                return other.Data.CompareTo(data) == 0 && other.ID == ID;
             }
         }
 
