@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using C_Sharp_Lib.Library.Graph;
+using Library.Graph;
 
 
-namespace C_Sharp_Lib.Library.Graph.Algorithms
+namespace Library.Graph.Algorithms
 {
     public class PreferredAttachment <T> where T : IComparable
     {
         public Graph<T> graph;
         public INode<T> curr;
 
-        double costModifier; 
+        double costModifier;
 
         public PreferredAttachment()
         {
@@ -51,6 +51,7 @@ namespace C_Sharp_Lib.Library.Graph.Algorithms
             graph.AllowSelfConnect = true;
             costModifier = 0.05;
             curr = graph.getRoot();
+            balanceNode(curr);
         }
 
         public bool setCostModifier(double modifier)
@@ -65,7 +66,7 @@ namespace C_Sharp_Lib.Library.Graph.Algorithms
         }
 
         /// <summary>
-        /// Generates a queue 
+        /// Traverses through graph generating a <see cref="Queue{T}"/>
         /// </summary>
         /// <param name="len"></param>
         /// <returns></returns>
@@ -83,55 +84,108 @@ namespace C_Sharp_Lib.Library.Graph.Algorithms
             
         }
 
+
+        /// <summary>
+        /// <see cref="curr"/> travels to next <see cref="INode{T}"/>
+        /// </summary>
+        /// <returns>Data held in <see cref="INode{T}"/> <see cref="curr"/> travels to</returns>
         public T getNext()
         {
             // Need to specify System.Random as it the library is meant for Unity
             // and they have their own Random class
             System.Random random = new Random();
-            double randNum = random.NextDouble(), cost;
+            double randNum = random.NextDouble(), cost = 0.0;
             List<IEdge<T>> sortedConnections;
             int index = 0, foundIndex = 0;
 
             if (curr == null)
-                return default; // discouraged for IComparable variables to be null
+                throw new PrefAttachNullRootException();
 
+            #region Travel to next node
             sortedConnections = curr.getEdgesSorted();
 
             foreach(IEdge<T> edge in sortedConnections)
             {
-                if (randNum <= edge.getCost())
+                cost += edge.Cost;
+
+                if (randNum >= cost)
                 {
-                    curr = edge.getDestNode();
+                    curr = edge.DestNode;
                     foundIndex = index;
                     break;
                 }
-                else
-                {
-                   randNum -= edge.getCost();
-                }
-
                 index++;
             }
+            #endregion
 
+            #region Update costs
             sortedConnections = curr.getEdgesSorted();
 
             for (int j = 0; j < sortedConnections.Count; j++)
             {
-                cost = sortedConnections[j].getCost();
+                cost = sortedConnections[j].Cost;
 
                 if (j == foundIndex)
                 {
-                    cost /= costModifier;
+                    cost *= (1.0 - costModifier);
                 }
                 else
                 {
-                    cost *= costModifier;
+                    cost *= (1.0 + costModifier);
                 }
 
-                curr.updateCostToNeighbor(sortedConnections[j].getDestNode(), cost);
+                curr.updateCostToNeighbor(sortedConnections[j].DestNode, cost);
+                
+            }
+            #endregion
+
+            balanceNode(curr);
+            return curr.Data;
+        }
+
+        /// <summary>
+        /// Ensures that the cost of traveling to all of <see cref="node"/>'s is 1.0
+        /// </summary>
+        /// <param name="node"></param>
+        public void balanceNode(INode<T> node)
+        {
+            List<IEdge<T>> edges = node.getEdgesSorted();
+            double sum = 0.0;
+
+            foreach (IEdge<T> edge in edges)
+            {
+                sum += edge.Cost;
             }
 
-            return curr.Data;
+            if (sum - 1.0 < double.Epsilon)
+                return;
+
+
+            foreach (IEdge<T> edge in edges)
+            {
+                edge.Cost /= sum;
+            }
+        }
+
+        public void tuneConnection(T source, T dest, bool increase)
+        {
+            if (graph.contains(source) == false && graph.contains(dest))
+            {
+                return;
+            }
+
+            System.Random random = new Random();
+            double rand = random.NextDouble() * 0.001;
+
+            if (increase)
+                rand = 1 + rand;
+            else
+                rand = 1 - rand;
+
+            graph.updateConnection(source, dest, rand);
+
+            balanceNode(graph.GetNode(source));
         }
     }
 }
+
