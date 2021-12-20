@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Library.Graph.Algorithms;
 
-namespace C_Sharp_Lib.Library.Graph
+namespace Library.Graph
 {
     public partial class Graph<T> where T : IComparable
     {
@@ -13,9 +14,27 @@ namespace C_Sharp_Lib.Library.Graph
         public bool AllowSelfConnect
         {
             get { return allowSelfConnect; }
-            set { allowSelfConnect = AllowSelfConnect; }
+            set { allowSelfConnect = value; }
         }
 
+        public int Size { get => nodes.Count; }
+        public INode<T> Root { get => nodes[0]; }
+        public List<INode<T>> Nodes
+        {
+            get
+            {
+                List<INode<T>> list = new List<INode<T>>();
+
+                foreach(Node node in nodes)
+                {
+                    list.Add(node);
+                }
+
+                return list;
+            }
+        }
+
+        #region Constructors
         public Graph()
         {
             nodes = new List<Node>();
@@ -56,14 +75,14 @@ namespace C_Sharp_Lib.Library.Graph
 
             foreach(KeyValuePair<T, List<T>> pair in adjList)
             {
-                if (existsInGraph(pair.Key) == false)
+                if (contains(pair.Key) == false)
                 {
                     insert(pair.Key);
                 }
 
                 foreach(T t in pair.Value)
                 {
-                    if (existsInGraph(t) == false)
+                    if (contains(t) == false)
                     {
                         insert(t);
                     }
@@ -86,30 +105,32 @@ namespace C_Sharp_Lib.Library.Graph
             nodes = new List<Node>();
 
             foreach (KeyValuePair<T, Dictionary<T, double>> pair in adjList){
-                if (existsInGraph(pair.Key) == false)
+                if (contains(pair.Key) == false)
                 {
                     insert(pair.Key);
                 }
 
                 foreach(KeyValuePair<T, double> pair2 in pair.Value)
                 {
-                    if (existsInGraph(pair2.Key) == false)
+                    if (contains(pair2.Key) == false)
                     {
                         insert(pair2.Key);
                     }
 
-                    connectNodes(pair.Key, pair2.Key, pair2.Value);
+                    if (connectNodes(pair.Key, pair2.Key, pair2.Value) == false)
+                        Console.WriteLine("Failed To Connect");
                 }
             }
         }
 
+        #endregion
         /// <summary>
         /// Checks if a node exists in  <code>nodes</code> based on the data a node containts.
         /// Dependent on <code>Find(T)</code> method
         /// </summary>
         /// <param name="nodeData">Node you're looking for </param>
         /// <returns>TRUE if it exists in nodes, FALSE otherwise</returns>
-        public bool existsInGraph(T nodeData)
+        public bool contains(T nodeData)
         {
             foreach(Node node in nodes)
             {
@@ -131,13 +152,19 @@ namespace C_Sharp_Lib.Library.Graph
         {
             foreach (Node node in nodes)
             {
-                if (node.Data.Equals(data))
+                if (node.Data.CompareTo(data) == 0)
                 {
                     return node;
                 }
             }
 
+            throw new Exception("Node not in graph");
             return null;
+        }
+
+        public INode<T> GetNode(T data)
+        {
+            return Find(data);
         }
 
         /// <summary>
@@ -166,7 +193,7 @@ namespace C_Sharp_Lib.Library.Graph
             return insertNode(new Node(t));
         }
 
-
+        #region Connect Nodes
         /// <summary>
         /// Connects two nodes
         /// </summary>
@@ -235,8 +262,9 @@ namespace C_Sharp_Lib.Library.Graph
 
             return start.connectNode(end, cost);
         }
+        #endregion Connect Nodes
 
-
+        #region Traversal
         /// <summary>
         /// Traverses through graph using Breadth First Traversal starting from
         /// graph's root
@@ -265,11 +293,11 @@ namespace C_Sharp_Lib.Library.Graph
                     foreach (IEdge<T> edge in node.getEdges())
                     {
                         if (node.Visited == false)
-                            queue.Enqueue(edge.getDestNode());
+                            queue.Enqueue(edge.DestNode);
                     }
                 }
 
-                node.Visited = false;
+                node.Visited = true;
             }
             return list;
         }
@@ -322,16 +350,17 @@ namespace C_Sharp_Lib.Library.Graph
 
             foreach (Edge edge in node.getEdges())
             {
-                INode<T> n = edge.getDestNode();
+                INode<T> n = edge.DestNode;
 
                 if (n.Visited == false)
                 {
                     DFT(n, list);
                 }
 
-                n.Visited = false;
+                n.Visited = true;
             }
         }
+        #endregion Traversal
 
         /// <summary>
         /// Resets all nodes in <code>nodes</code> list not visited
@@ -344,6 +373,7 @@ namespace C_Sharp_Lib.Library.Graph
             }
         }
 
+        #region Adjacency Matrices And Lists
         /// <summary>
         /// Generates unweighted adjacency matirx.
         /// </summary>
@@ -420,15 +450,9 @@ namespace C_Sharp_Lib.Library.Graph
             return dict;
         }
 
-        /// <summary>
-        /// Gets the size of <code>nodes.Count</code>
-        /// </summary>
-        /// <returns>Number of nodes in graph</returns>
-        public int getSize()
-        {
-            return nodes.Count;
-        }
+        #endregion
 
+        #region Change Cost To Travel To Node
         private bool updateConnection(Node source, Node dest, double cost)
         {
             return source.updateCostToNeighbor(dest, cost);
@@ -465,27 +489,14 @@ namespace C_Sharp_Lib.Library.Graph
         {
             return source.incrementCostToNeighbor(dest, pct);
         }
+        #endregion Change Cost To Travel To Node
 
         public INode<T> getRoot()
         {
             return nodes[0];
         }
 
-        /// <summary>
-        /// Goes through the graph's list of nodes and gets the data stored in every one
-        /// </summary>
-        /// <returns>Returns list of every piece of data in the graph</returns>
-        public List<T> getNodes()
-        {
-            List<T> list = new List<T>();
-
-            foreach(Node node in nodes)
-            {
-                list.Add(node.Data);
-            }
-
-            return list;
-        }
+        
 
         /// <summary>
         /// Returns index of <paramref name="node"/> in nodes
@@ -511,103 +522,135 @@ namespace C_Sharp_Lib.Library.Graph
             return -1;
         }
 
-        protected double[] dijkstra(Node source)
-        {
-            double[] distances = new double[nodes.Count];
-            double[,] graph;
-            int index = getNodeIndex(source);
+        //#region Dijkstra
 
-            if (index == -1)
-            {
-                return null;
-            }
+        //public double[] dijkstra(T data)
+        //{
+        //    Node node = Find(data);
 
-            for(int i = 0; i < nodes.Count; i++)
-            {
-                distances[i] = double.MaxValue;
-            }
+        //    return dijkstra(node);
+        //}
 
-            graph = getWeightedAdjacencyMatrix();
+        //public double minDistanceToDest(T source, T target)
+        //{
+        //    Node sourceNode = Find(source);
+        //    Node destNode = Find(target);
 
-            distances[index] = 0;
+        //    if (sourceNode == null || destNode == null)
+        //        throw new ElementNotInGraphException();
 
-            resetVisitedNodes();
+        //    double[] distances = dijkstra(sourceNode);
 
-            source.Visited =true;
+        //    if (getNodeIndex(destNode) != -1)
+        //    {
+        //        return distances[getNodeIndex(destNode)];
+        //    }
 
-            foreach (Node curr in nodes)
-            {
-                if (curr != source)
-                {
-                    int currNodeindex = minDistance(distances);
+        //    throw new ElementNotInGraphException();
+        //}
 
-                    nodes[currNodeindex].Visited = true;
+        //private double[] dijkstra(Node source)
+        //{
+        //    double[] distances = new double[nodes.Count];
+        //    double[,] graph;
+        //    int index = getNodeIndex(source);
 
-                    for (int otherNodeIndex = 0; otherNodeIndex < nodes.Count; otherNodeIndex++)
-                    {
-                        if (updateDikstra(currNodeindex, otherNodeIndex, distances))
-                        {
-                            distances[otherNodeIndex] = distances[currNodeindex] + graph[index, otherNodeIndex];
-                        }
+        //    if (index == -1)
+        //    {
+        //        return null;
+        //    }
 
-                    }
-                }
-            }
+        //    for(int i = 0; i < nodes.Count; i++)
+        //    {
+        //        distances[i] = double.MaxValue;
+        //    }
 
-            return distances;
-        }
+        //    graph = getWeightedAdjacencyMatrix();
 
-        /// <summary>
-        /// Helper method for Dijkstra to see if <paramref name="distances"/>[<paramref name="currNodeIndex"/>] needs to be updated
-        /// </summary>
-        /// <param name="currNodeIndex">Node Dijkstra is currently evalauating</param>
-        /// <param name="targetNodeIndex">Node which <paramref name="currNodeIndex"/> is currently evaluating against</param>
-        /// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
-        /// <returns></returns>
-        private bool updateDikstra(int currNodeIndex, int targetNodeIndex, double[] distances)
-        {
-            double[,] graph = getWeightedAdjacencyMatrix();
+        //    distances[index] = 0;
 
-            if (nodes[currNodeIndex].Visited)
-                return false;
-            if (graph[currNodeIndex, targetNodeIndex] == 0)
-                return false;
-            if (distances[currNodeIndex] == double.MaxValue)
-                return false;
-            if (distances[currNodeIndex] > distances[currNodeIndex] + graph[currNodeIndex, targetNodeIndex])
-                return false;
+        //    resetVisitedNodes();
 
-            return true;
-        }
+        //    source.Visited =true;
 
-        /// <summary>
-        /// Helper method for Dijkstra. Finds the smallest distance from <paramref name="distances"/>
-        /// whose Node has not yet been visited
-        /// </summary>
-        /// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
-        /// <returns>Returns index of Node Dijkstra needs to evaluate against</returns>
-        private int minDistance(double[] distances)
-        {
-            int index = 0, minIndex = -1 ;
-            double min = double.MinValue;
+        //    foreach (Node curr in nodes)
+        //    {
+        //        if (curr != source)
+        //        {
+        //            int currNodeindex = minDistance(distances);
 
-            foreach (Node node in nodes)
-            {
-                if (node.Visited == false)
-                {
-                    if (distances[index] <= min)
-                    {
-                        min = distances[index];
-                        minIndex = index;
-                    }
-                }
+        //            if(currNodeindex == -1)
+        //            {
+        //                continue;
+        //            }
 
-                index++;
-            }
+        //            nodes[currNodeindex].Visited = true;
 
-            return minIndex;
-        }
+        //            for (int otherNodeIndex = 0; otherNodeIndex < nodes.Count; otherNodeIndex++)
+        //            {
+        //                if (updateDikstra(currNodeindex, otherNodeIndex, distances))
+        //                {
+        //                    distances[otherNodeIndex] = distances[currNodeindex] + graph[index, otherNodeIndex];
+        //                }
+        //            }
+        //        }
+        //    }
 
+        //    return distances;
+        //}
 
+        ///// <summary>
+        ///// Helper method for <see cref="dijkstra(Node)"/> to see if
+        ///// <paramref name="distances"/>[<paramref name="currNodeIndex"/>] needs to be updated
+        ///// </summary>
+        ///// <param name="currNodeIndex">Node Dijkstra is currently evalauating</param>
+        ///// <param name="targetNodeIndex">Node which <paramref name="currNodeIndex"/> is currently evaluating against</param>
+        ///// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+        ///// <returns></returns>
+        //private bool updateDikstra(int currNodeIndex, int targetNodeIndex, double[] distances)
+        //{
+        //    double[,] graph = getWeightedAdjacencyMatrix();
+
+        //    if (nodes[currNodeIndex].Visited)
+        //        return false;
+        //    if (graph[currNodeIndex, targetNodeIndex] == 0)
+        //        return false;
+        //    if (distances[currNodeIndex] == double.MaxValue)
+        //        return false;
+        //    if (distances[currNodeIndex] > distances[currNodeIndex] + graph[currNodeIndex, targetNodeIndex])
+        //        return false;
+
+        //    return true;
+        //}
+
+        ///// <summary>
+        ///// Helper method for <see cref="dijkstra(Node)"/>. Finds the smallest distance from <paramref name="distances"/>
+        ///// whose Node has not yet been visited
+        ///// </summary>
+        ///// <param name="distances">Distances Dijkstra has and needs to evaluate</param>
+        ///// <returns>Returns index of Node Dijkstra needs to evaluate against</returns>
+        //private int minDistance(double[] distances)
+        //{
+        //    int index = 0, minIndex = -1 ;
+        //    double min = double.MinValue;
+
+        //    foreach (Node node in nodes)
+        //    {
+        //        if (node.Visited == false)
+        //        {
+        //            if (distances[index] <= min)
+        //            {
+        //                min = distances[index];
+        //                minIndex = index;
+        //            }
+        //        }
+
+        //        index++;
+        //    }
+
+        //    return minIndex;
+        //}
+
+        //#endregion Dijkstra
     }
 }
