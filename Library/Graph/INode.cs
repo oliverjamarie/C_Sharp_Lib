@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using C_Sharp_Lib.Library.Graph;
+using Library.Graph;
 
-namespace C_Sharp_Lib.Library.Graph
+namespace Library.Graph
 {
     public interface INode<T> where T : IComparable
     {
@@ -18,7 +18,8 @@ namespace C_Sharp_Lib.Library.Graph
         Dictionary<T, double> getWeightedNeighbors();
         bool incrementCostToNeighbor(INode<T>dest, double pct);
         bool updateCostToNeighbor(INode<T>dest, double cost);
-
+        bool Equals(INode<T> other);
+        
         // properties
         T Data
         {
