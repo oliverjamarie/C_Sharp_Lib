@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 
 
-namespace C_Sharp_Lib.Library.Tree
+namespace Library.Tree
 {
-    public partial class GameTree<T>
+    public partial class GameTree<Move>
     {
-        protected class Node : ITreeNode<T>
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+        public class Node : IMiniMax<Move>
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         {
 
-            protected List<ITreeNode<T>> children;
-            protected T data;
-            protected ITreeNode<T> parent;
+            protected List<ITreeNode<Move>> children;
+            protected Move data;
+            protected IMiniMax<Move> parent;
             private static int countNodes = 0;
+            private static IMiniMax<Move>.MiniMaxAlgoMode algoMode;
             protected int id;
-            private MiniMax nodeType;
+            private IMiniMax<Move>.MiniMax nodeType;
 
+            #region Properties 
             public static int CountNodes
             {
                 get
@@ -24,12 +28,37 @@ namespace C_Sharp_Lib.Library.Tree
                 }
             }
 
-            public MiniMax NodeType
+            public List<ITreeNode<Move>> Children
+            {
+                get => children;
+            }
+
+            public Move Data
+            {
+                get
+                {
+                    return data;
+                }
+                set
+                {
+                    data = value;
+                }
+            }
+
+            public int ID
+            {
+                get
+                {
+                    return id;
+                }
+            }
+
+            public IMiniMax<Move>.MiniMax NodeType
             {
                 get { return nodeType; }
             }
 
-            public ITreeNode<T> Parent
+            public IMiniMax<Move> Parent
             {
                 get
                 {
@@ -37,76 +66,85 @@ namespace C_Sharp_Lib.Library.Tree
                 }
                 set
                 {
-                    if (Parent.NodeType == MiniMax.MAX_NODE)
-                        nodeType = MiniMax.MIN_NODE;
+                    if (Parent.NodeType == IMiniMax<Move>.MiniMax.MAX_NODE)
+                        nodeType = IMiniMax<Move>.MiniMax.MIN_NODE;
                     else
-                        nodeType = MiniMax.MAX_NODE;
+                        nodeType = IMiniMax<Move>.MiniMax.MAX_NODE;
 
-                    parent = Parent;
+                    parent = value;
                 }
             }
 
+            public IMiniMax<Move>.MiniMaxAlgoMode AlgoMode
+            {
+                get
+                {
+                    return algoMode;
+                }
+                set
+                {
+                    algoMode = value;
+                }
+            }
+            protected bool IsTerminal
+            {
+                get
+                {
+                    return children.Count == 0;
+                }
+            }
+
+            ITreeNode<Move> ITreeNode<Move>.Parent {
+                get => ((ITreeNode<Move>)Parent).Parent;
+                set => ((ITreeNode<Move>)Parent).Parent = value;
+            }
+            #endregion
+
+            #region Constructors
             public Node()
             {
-                children = new List<ITreeNode<T>>();
-                data = default(T);
+                children = new List<ITreeNode<Move>>();
+                data = default;
                 parent = null;
-                nodeType = MiniMax.MAX_NODE;
+                nodeType = IMiniMax<Move>.MiniMax.MAX_NODE;
                 id = countNodes++;
             }
 
-            public Node(T data) : this()
+            public Node(Move data) : this()
             {
                 this.data = data;
             }
 
-            public Node(T data, List<Node> children) : this(data)
+            public Node(Move data, List<Node> children) : this(data)
             {
                 this.children.AddRange(children);
             }
 
-            public Node(T data, Node parent) : this(data)
+            public Node(Move data, Node parent) : this(data)
             {
                 this.parent = parent;
-                if (parent.nodeType == MiniMax.MAX_NODE)
-                    nodeType = MiniMax.MIN_NODE;
+                if (parent.nodeType == IMiniMax<Move>.MiniMax.MAX_NODE)
+                    nodeType = IMiniMax<Move>.MiniMax.MIN_NODE;
                 else
-                    nodeType = MiniMax.MAX_NODE;
+                    nodeType = IMiniMax<Move>.MiniMax.MAX_NODE;
             }
 
-            public List<ITreeNode<T>> getChildren()
-            {
-                return children;
-            }
+            #endregion
 
-            public T getData()
-            {
-                return data;
-            }
 
-            public ITreeNode<T> getParent()
+            public void addChild(ITreeNode<Move> child)
             {
-                return parent;
-            }
-
-            public bool addChild(ITreeNode<T> child)
-            {
-                if (getParents().Contains(child))
-                    return false;
-
                 children.Add(child);
                 child.Parent = this;
-
-                return true;
             }
 
-            public bool addChild(T data)
+            public void addChild(Move data)
             {
                 Node node = new Node(data);
-                return addChild(node);
+                addChild(node);
             }
 
-            public void addChildren(List<ITreeNode<T>> chidlrenIN)
+            public void addChildren(List<ITreeNode<Move>> chidlrenIN)
             {
                 foreach (Node node in chidlrenIN)
                 {
@@ -114,15 +152,15 @@ namespace C_Sharp_Lib.Library.Tree
                 }
             }
 
-            public List<ITreeNode<T>> getParents()
+            public List<ITreeNode<Move>> getParents()
             {
-                List<ITreeNode<T>> parents = new List<ITreeNode<T>>();
-                ITreeNode<T> curr = this;
+                List<ITreeNode<Move>> parents = new List<ITreeNode<Move>>();
+                ITreeNode<Move> curr = this;
 
-                while (curr.getParent() != null)
+                while (curr.Parent != null)
                 {
-                    parents.Add(curr.getParent());
-                    curr = curr.getParent();
+                    parents.Add(curr.Parent);
+                    curr = curr.Parent;
                 }
 
                 return parents;
@@ -136,7 +174,7 @@ namespace C_Sharp_Lib.Library.Tree
                 return false;
             }
 
-            public bool Equals(ITreeNode<T> other)
+            public bool Equals(ITreeNode<Move> other)
             {
                 return this.id == other.getID();
             }
@@ -146,10 +184,11 @@ namespace C_Sharp_Lib.Library.Tree
                 return this.id;
             }
 
-            public int getScore()
+            public int generateScore()
             {
-                return data.getScore();
+                return Parent.generateScore();
             }
+
         }
     }
 }
