@@ -1,0 +1,4 @@
+var namespace_c___sharp___lib_1_1_library_1_1_graph_1_1_algorithms =
+[
+    [ "PreferredAttachment", "class_c___sharp___lib_1_1_library_1_1_graph_1_1_algorithms_1_1_preferred_attachment.html", "class_c___sharp___lib_1_1_library_1_1_graph_1_1_algorithms_1_1_preferred_attachment" ]
+];

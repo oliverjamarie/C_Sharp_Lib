@@ -1,0 +1,11 @@
+digraph "C_Sharp_Lib.Library.Tree.GameTree&lt; Move &gt;.Node"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="C_Sharp_Lib.Library.Tree.\lGameTree\< Move \>.Node",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="IMiniMax\< Move \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$interface_c___sharp___lib_1_1_library_1_1_tree_1_1_i_mini_max.html",tooltip=" "];
+  Node3 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="ITreeNode\< Move \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$interface_c___sharp___lib_1_1_library_1_1_tree_1_1_i_tree_node.html",tooltip=" "];
+}

@@ -1,0 +1,17 @@
+digraph "C_Sharp_Lib.Library.Graph.Graph.Graph"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="C_Sharp_Lib.Library.Graph.\lGraph.Graph",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Constructor using an adjacency list (includes weights to destination nodes)"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="C_Sharp_Lib.Library.Graph.\lGraph.connectNodes",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_c___sharp___lib_1_1_library_1_1_graph_1_1_graph.html#a18a9a07a27ffc927cc21eb0c1123e0b8",tooltip="Connects two nodes"];
+  Node2 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="C_Sharp_Lib.Library.Graph.\lGraph.Find",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_c___sharp___lib_1_1_library_1_1_graph_1_1_graph.html#ae1ad9d788a99c52de0667ab83ad6dc84",tooltip="Finds node having"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="C_Sharp_Lib.Library.Graph.\lGraph.existsInGraph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_c___sharp___lib_1_1_library_1_1_graph_1_1_graph.html#a864085d804417ad8a1d555f71e900cfd",tooltip="Checks if a node exists in"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="C_Sharp_Lib.Library.Graph.\lGraph.insert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_c___sharp___lib_1_1_library_1_1_graph_1_1_graph.html#a3646b09b9d7180665108d07bfa50b837",tooltip="Inserts new node into"];
+}
