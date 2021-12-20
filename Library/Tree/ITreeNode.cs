@@ -1,32 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace C_Sharp_Lib.Library.Tree
+namespace Library.Tree
 {
-    public interface ITreeNode<T> where T : IComparable
+    public interface ITreeNode<Move>
     {
-        //bool addChild(ITreeNode<T> child);
-        bool addChild(T data);
-        void addChildren(List<ITreeNode<T>> chidlrenIN);
-        //bool Equals(object obj);
-        //bool Equals(INode<T>other);
-        List<ITreeNode<T>> getChildren();
-        T getData();
-        ITreeNode<T>getParent();
-        List<ITreeNode<T>> getParents();
+        void addChild(Move data);
+        void addChildren(List<ITreeNode<Move>> chidlrenIN);
+        List<ITreeNode<Move>> getParents();
         int getID();
-        int getScore();
 
-        ITreeNode<T> Parent
+        ITreeNode<Move> Parent
         {
             get;
             set;
         }
 
-        MiniMax NodeType
+        Move Data
+        {
+            get;
+            set;
+        }
+
+        int ID
         {
             get;
         }
+
+        List<ITreeNode<Move>> Children { get; }
 
     }
 }
