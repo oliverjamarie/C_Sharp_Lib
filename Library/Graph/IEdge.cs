@@ -1,10 +1,12 @@
 ﻿using System;
-using C_Sharp_Lib.Library.Graph;
-namespace C_Sharp_Lib.Library.Graph
+using Library.Graph;
+
+namespace Library.Graph
 {
     public interface IEdge<T> where T : IComparable
     {
-        public INode<T> getDestNode();
-        public double getCost();
+        public INode<T> DestNode { get; }
+        public INode<T> SourceNode { get; }
+        public double Cost { get; set; }
     }
 }
