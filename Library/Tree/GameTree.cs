@@ -1,25 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace C_Sharp_Lib.Library.Tree
+namespace Library.Tree
 {
-    public partial class GameTree<T> where T : IComparable, IScore
+    /// <summary>
+    /// Class used for games where you want to implement MiniMax
+    /// </summary>
+    /// <typeparam name="Move">
+    /// Creating a child of <typeparamref name="Move"/>
+    /// allows you to create a MiniMax AI that can work multiple games
+    /// </typeparam>
+    public partial class GameTree<Move> 
     {
-        private ITreeNode<T> root;
+        private Node root;
 
         public GameTree()
         {
             root = null;
         }
 
-        public GameTree (T data) 
+        public GameTree (Move data) 
         {
             root = new Node(data);
         }
 
-        public List<ITreeNode<T>> DFT()
+        /// <summary>
+        /// Depth first traversal. Dependant on <see cref="DFT(Node, List{ITreeNode{Move}})"/>
+        /// </summary>
+        /// <returns>List of all elements in the tree</returns>
+        public List<ITreeNode<Move>> DFT()
         {
-            List<ITreeNode<T>> tree = new List<ITreeNode<T>>();
+            List<ITreeNode<Move>> tree = new List<ITreeNode<Move>>();
 
             if (root == null)
                 return tree;
@@ -29,19 +40,28 @@ namespace C_Sharp_Lib.Library.Tree
             return tree;
         }
 
-        private void DFT(ITreeNode<T> source, List<ITreeNode<T>> list)
+        /// <summary>
+        /// Helper method for <see cref="DFT"/>
+        /// </summary>
+        /// <param name="source">Current node being visited</param>
+        /// <param name="list">List of nodes visited so far</param>
+        private void DFT(Node source, List<ITreeNode<Move>> list)
         {
-            list.Add(source);
+            list.Add((ITreeNode<Move>)source);
 
-            foreach(ITreeNode<T> child in source.getChildren())
+            foreach(Node child in source.Children)
             {
                 DFT(child, list);
             }
         }
 
-        public List<ITreeNode<T>> BFT()
+        /// <summary>
+        /// Breadth first traversal.  Dependant on <see cref="BFT(Node, List{ITreeNode{Move}})"/>
+        /// </summary>
+        /// <returns></returns>
+        public List<ITreeNode<Move>> BFT()
         {
-            List<ITreeNode<T>> tree = new List<ITreeNode<T>>();
+            List<ITreeNode<Move>> tree = new List<ITreeNode<Move>>();
 
             if (root == null)
                 return tree;
@@ -49,38 +69,60 @@ namespace C_Sharp_Lib.Library.Tree
             return tree;
         }
 
-        private void BFT(Node source, List<ITreeNode<T>> list)
+        /// <summary>
+        /// Helper method for <see cref="BFT"/>
+        /// </summary>
+        /// <param name="source">Current node being visited</param>
+        /// <param name="list">List of nodes visited so far</param>
+        private void BFT(Node source, List<ITreeNode<Move>> list)
         {
             if (source == null)
                 return;
 
-            foreach(Node child in source.getChildren()){
+            foreach(Node child in source.Children){
                 BFT(child,list);
-                list.Add(source);
+                list.Add((ITreeNode<Move>)source);
             }
         }
 
-        public bool insert(T data, int parentID)
+        /// <summary>
+        /// Insert a <see cref="Move"/> into the tree
+        /// </summary>
+        /// <param name="data">Move to insert in tree</param>
+        /// <param name="parentID">ID of the parent node we want to connect this to</param>
+        public void insert(Move data, int parentID)
         {
             if (root == null)
             {
                 root = new Node(data);
+                return;
             }
 
-            ITreeNode<T> parent = getNode(parentID, root);
+            Node parent = getNode(parentID, root);
 
             if (parent == null)
-                return false;
+                return ;
 
-            return parent.addChild(data);            
+            parent.addChild(data);            
         }
 
-        public ITreeNode<T> getNode(int nodeID)
+        /// <summary>
+        /// Finds node in tree based on its ID
+        /// </summary>
+        /// <param name="nodeID">ID of the node we want</param>
+        /// <returns>Found node</returns>
+        public ITreeNode<Move> getNode(int nodeID)
         {
             return getNode(nodeID, root);
         }
 
-        private ITreeNode<T> getNode(int nodeID, ITreeNode<T> node)
+        /// <summary>
+        /// Searches through tree looking for a node based on its ID
+        /// </summary>
+        /// <param name="nodeID">ID of Node we want</param>
+        /// <param name="node">Current node we're visiting</param>
+        /// <returns>Found node</returns>
+        private Node getNode(int nodeID, Node node)
         {
             if (node == null)
                 return null;
@@ -88,7 +130,7 @@ namespace C_Sharp_Lib.Library.Tree
             if (node.getID() == nodeID)
                 return node;
 
-            foreach(Node child in node.getChildren())
+            foreach(Node child in node.Children)
             {
                 if (getNode(nodeID, child) != null)
                     return node;
@@ -97,128 +139,6 @@ namespace C_Sharp_Lib.Library.Tree
             return null;
         }
 
-        public List<ITreeNode<T>> minimax(int depth, MiniMaxAlgoMode miniMaxAlgoMode = MiniMaxAlgoMode.DEFAULT)
-        {
-            ITreeNode<T> terminalNode;
-
-            if (miniMaxAlgoMode == MiniMaxAlgoMode.DEFAULT)
-               terminalNode = minimax(root, depth);
-            else
-                terminalNode = minimax(root, depth, int.MinValue, int.MaxValue);
-
-            List<ITreeNode<T>> nodes = new List<ITreeNode<T>>();
-            nodes.Add(terminalNode);
-            nodes.AddRange(terminalNode.getParents());
-
-            return nodes;
-        }
-
-        private ITreeNode<T> minimax(ITreeNode<T> curr, int depthRemain, int alpha, int beta)
-        {
-            ITreeNode<T> terminalNode = curr;
-
-            if (curr == null)
-            {
-                return null;
-            }
-
-            if (depthRemain <= 0 || curr.getChildren().Count == 0)
-            {
-                return curr;
-            }
-
-
-            foreach (Node child in curr.getChildren())
-            {
-                ITreeNode<T> node = minimax(child, depthRemain - 1, alpha, beta);
-                if (curr.NodeType == MiniMax.MAX_NODE)
-                {
-                    if (beta > node.getScore())
-                    {
-                        terminalNode = node;
-                        beta = node.getScore();
-                        if (alpha >= beta)
-                        {
-                            Console.WriteLine("Beta was less than Alpha.....PRUNED BRANCH");
-                            break;
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (alpha < node.getScore())
-                    {
-                        terminalNode = node;
-                        alpha = node.getScore();
-                        if (alpha >= beta)
-                        {
-                            Console.WriteLine("Beta was less than Alpha.....PRUNED BRANCH");
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return terminalNode;
-
-        }
-
-        private ITreeNode<T> minimax(ITreeNode<T> curr, int depthRemain)
-        {
-            ITreeNode<T> terminalNode = curr;
-
-            if (curr == null)
-            {
-                return null ;
-            }
-
-            if (depthRemain <= 0 || curr.getChildren().Count == 0)
-            {
-                return curr;
-            }
-
-
-            foreach (Node child in curr.getChildren())
-            {
-                ITreeNode<T> node = minimax(child, depthRemain - 1);
-                
-                int score;
-
-                if (curr.NodeType == MiniMax.MAX_NODE)
-                {
-                    score = int.MinValue;
-                    if (node.getScore() >= score)
-                    {
-                        terminalNode = node;
-                    }
-                }
-                else
-                {
-                    score = int.MaxValue;
-                    if (node.getScore() <= score)
-                    {
-                        terminalNode = node;
-                    }
-                }
-            }
-            return terminalNode;
-        }
-
-        private ITreeNode<T> Max(ITreeNode<T> node1, ITreeNode<T> node2)
-        {
-            if (node1.getScore() > node2.getScore())
-                return node1;
-            else
-                return node2;
-        }
-
-        private ITreeNode<T> Min(ITreeNode<T> node1, ITreeNode<T> node2)
-        {
-            if (node1.getScore() < node2.getScore())
-                return node1;
-            else
-                return node2;
-        }
+        
     }
 }
