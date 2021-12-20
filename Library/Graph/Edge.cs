@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace C_Sharp_Lib.Library.Graph
+namespace Library.Graph
 {
    
     partial class Graph<T>
     {
         protected class Edge : IEdge<T>
         {
-            INode<T> destNode;
+            INode<T> destNode, sourceNode;
             double cost;
+
+            public INode<T> DestNode => destNode;
+
+            public INode<T> SourceNode => sourceNode;
+
+            public double Cost { get => cost; set => cost = value; }
+
+
 
 
             /// <summary>
@@ -17,38 +25,13 @@ namespace C_Sharp_Lib.Library.Graph
             /// </summary>
             /// <param name="targetNode">Edge's destination node</param>
             /// <param name="cost">Cost to travel through the edge to the destination node</param>
-            public Edge(INode<T> targetNode, double cost)
+            public Edge(INode<T> targetNode, INode<T> sourceNode, double cost)
             {
                 this.destNode = targetNode;
+                this.sourceNode = sourceNode;
                 this.cost = cost;
             }
 
-
-            /// <summary>
-            /// Returns the edge's destination node
-            /// </summary>
-            /// <returns>
-            /// Destination node
-            /// </returns>
-            public INode<T> getDestNode()
-            {
-                return destNode;
-            }
-
-            public void setCost(double cost)
-            {
-                this.cost = cost;
-            }
-
-
-            /// <summary>
-            /// Returns the cost to go the edge's destination node
-            /// </summary>
-            /// <returns>Cost to destination node</returns>
-            public double getCost()
-            {
-                return cost;
-            }
         }
     }
     
